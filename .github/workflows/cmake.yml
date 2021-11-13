@@ -61,9 +61,9 @@ jobs:
         # trim prefix from ref to get tag name
         run: echo "TAG_NAME=${GITHUB_REF#'refs/tags/'}" >> $GITHUB_ENV
 
-      - name: Debug
-        shell: bash
-        run: pwd && tree
+      # - name: Debug
+      #   shell: bash
+      #   run: pwd && tree
 
       - name: Archive Release
         uses: thedoctor0/zip-release@master
@@ -72,8 +72,13 @@ jobs:
           path: 'build/artifacts'
           filename: test.zip
 
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: |
+      #       test.zip
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1
         with:
-          files: |
-            test.zip
+          artifacts: "test.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
