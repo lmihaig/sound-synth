@@ -1,11 +1,11 @@
-name: CMake CI
+name: C++ CI
 
 on:
   push:
-    branches: [master] 
+    branches: [master] # replace with main (if applicable)
     tags: '*'
   pull_request:
-    branches: [master]
+    branches: [master] # replace with main (if applicable)
 
 jobs:
   build:
@@ -65,12 +65,11 @@ jobs:
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
-          type: 'tar'
-          path: artifacts
-          filename: release_${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.tar.gz
+          type: 'zip'
+          filename: release_${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            release_${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.tar.gz
+            release_${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
