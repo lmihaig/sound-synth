@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include "sequencer.h"
+#include <iostream>
+#include <portaudio.h>
 
 int main()
 {
-    testfunc();
+    std::cout << "retard" << Pa_GetVersion() << "retard";
     return 0;
 }
