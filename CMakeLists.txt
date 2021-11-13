@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(sound-synth VERSION 0.1.0)
 
-include(CTest)
-enable_testing()
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-# Find and update submodule
+# Find and update submodules
 find_package(Git QUIET)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
         option(GIT_SUBMODULE "Check submodules during build" ON)
@@ -29,10 +29,7 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC external/portaudio/include)
 
 target_link_directories(${PROJECT_NAME}
-        PRIVATE external/portaudio)
+        PRIVATE build/external/portaudio)
 
 target_link_libraries(${PROJECT_NAME} PortAudio)
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
