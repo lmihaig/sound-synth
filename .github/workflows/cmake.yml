@@ -57,10 +57,10 @@ jobs:
         # Use CMake to "install" build artifacts (only interested in CMake registered targets) to our custom artifacts directory
         run: cmake --install build --config $BUILD_TYPE --prefix artifacts
 
-      -name: Debug
+      - name: Debug
         shell: bash
         run: pwd && ls
-        
+
       - name: Set Tag Name
         shell: bash
         # trim prefix from ref to get tag name
