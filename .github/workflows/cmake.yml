@@ -57,14 +57,14 @@ jobs:
         # Use CMake to "install" build artifacts (only interested in CMake registered targets) to our custom artifacts directory
         run: cmake --install build --config $BUILD_TYPE --prefix artifacts
 
-      - name: Debug
-        shell: bash
-        run: pwd && ls
-
       - name: Set Tag Name
         shell: bash
         # trim prefix from ref to get tag name
         run: echo "TAG_NAME=${GITHUB_REF#'refs/tags/'}" >> $GITHUB_ENV
+
+      - name: Debug
+        shell: bash
+        run: pwd && ls && tree
 
       - name: Archive Release
         uses: thedoctor0/zip-release@master
