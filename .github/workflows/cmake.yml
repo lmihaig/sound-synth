@@ -64,7 +64,7 @@ jobs:
 
       - name: Debug
         shell: bash
-        run: pwd && ls && tree
+        run: pwd && ls build
 
       - name: Archive Release
         uses: thedoctor0/zip-release@master
