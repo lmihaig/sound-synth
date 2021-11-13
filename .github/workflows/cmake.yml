@@ -59,6 +59,8 @@ jobs:
 
       - name: Set Tag Name
         shell: bash
+        run: pwd
+        run: ls
         # trim prefix from ref to get tag name
         run: echo "TAG_NAME=${GITHUB_REF#'refs/tags/'}" >> $GITHUB_ENV
 
