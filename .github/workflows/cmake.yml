@@ -34,7 +34,6 @@ jobs:
         run: |
           echo $GITHUB_WORKSPACE
           mkdir $GITHUB_WORKSPACE/build
-          mkdir $GITHUB_WORKSPACE/artifacts
       - name: Configure CMake
         env:
           CXX: ${{ matrix.cxx }}
@@ -51,11 +50,11 @@ jobs:
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: cmake --build . --config $BUILD_TYPE
 
-      - name: Install
-        # working-directory: ${{ github.workspace }}/build
-        shell: bash
-        # Use CMake to "install" build artifacts (only interested in CMake registered targets) to our custom artifacts directory
-        run: cmake --install build --config $BUILD_TYPE --prefix artifacts
+      # - name: Install
+      #   # working-directory: ${{ github.workspace }}/build
+      #   shell: bash
+      #   # Use CMake to "install" build artifacts (only interested in CMake registered targets) to our custom artifacts directory
+      #   run: cmake --install build --config $BUILD_TYPE --prefix artifacts
 
       - name: Set Tag Name
         shell: bash
@@ -67,14 +66,16 @@ jobs:
         run: pwd && tree
 
       - name: Archive Release
+        shell: bash
+        run: pwd
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
           path: 'build/artifacts'
-          filename: release_${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
+          filename: test.zip
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            release_${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
+            test.zip
