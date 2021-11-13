@@ -3,6 +3,6 @@
 
 int main()
 {
-    std::cout << "retard" << Pa_GetVersion() << "retard";
+    std::cout << "test" << Pa_GetVersion();
     return 0;
 }
