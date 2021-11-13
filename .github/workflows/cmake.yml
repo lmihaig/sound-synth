@@ -64,12 +64,13 @@ jobs:
 
       - name: Debug
         shell: bash
-        run: pwd && ls build
+        run: pwd && tree
 
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
+          path: 'build/artifacts'
           filename: release_${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
 
       - name: Release
