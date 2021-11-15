@@ -1,4 +1,4 @@
-name: C++ CI
+name: C++ CMake CI
 
 on:
   push:
@@ -70,16 +70,11 @@ jobs:
         with:
           type: 'zip'
           path: 'build/artifacts'
-          filename:  release_${{ env.TAG_NAME }}_${{ matrix.os }}.zip
-
-      # - name: Release
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     files: |
-      #       test.zip
+          filename:  ${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
+          
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-             release_${{ env.TAG_NAME }}_${{ matrix.os }}.zip
+             ${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
