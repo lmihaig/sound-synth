@@ -19,17 +19,15 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
         endif()
 endif()
 
-add_subdirectory(external/portaudio EXCLUDE_FROM_ALL)
-
+# Add source files
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_executable(${PROJECT_NAME} main.cpp ${SRC_FILES})
 
+
+# Add external libraries and header files
+add_subdirectory(external/SDL2)
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include 
-        PUBLIC external/portaudio/include)
-
-target_link_directories(${PROJECT_NAME}
-        PRIVATE build/external/portaudio)
-
-target_link_libraries(${PROJECT_NAME} PortAudio)
-
+        PUBLIC external/SDL2/include
+        )
+target_link_libraries(${PROJECT_NAME} SDL2 SDL2main)
