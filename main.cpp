@@ -1,6 +1,10 @@
-#include <synth.h>
+#include <SDL.h>
+#include <iostream>
 
 int main()
 {
-    synth synth();
+    SDL_Init(SDL_INIT_AUDIO);
+    std::cout << "TEST";
+    SDL_Quit();
+    return 0;
 }
