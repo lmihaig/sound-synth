@@ -2,10 +2,7 @@ name: C++ CMake CI
 
 on:
   push:
-    branches: [master] # replace with main (if applicable)
     tags: '*'
-  pull_request:
-    branches: [master] # replace with main (if applicable)
 
 jobs:
   build:
@@ -69,7 +66,7 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          path: 'build/artifacts'
+          path: 'artifacts'
           filename:  ${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
           
       - name: Release

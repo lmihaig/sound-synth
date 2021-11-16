@@ -4,6 +4,7 @@
 
 # Build folder
 build/
+artifacts/
 
 
 # Compiled Object files
