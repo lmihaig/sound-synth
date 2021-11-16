@@ -1,6 +1,7 @@
 ### A platform independent sound synthethiser using SDL(Simple Directmedia Layer) for audio, keyboard input and graphics.
 
 Inspiration:
+
 https://www.youtube.com/watch?v=tgamhuQnOkM
 
 https://www.youtube.com/watch?v=UvRU25T_XOg
