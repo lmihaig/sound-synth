@@ -1,8 +1,9 @@
 #include <application.h>
 #include <synth.h>
 #include <iostream>
+// synth{Synth(maxPolyphony)}
+APPLICATION::APPLICATION(size_t width, size_t height) : initialised{false}, window{nullptr}, running{false}
 
-APPLICATION::APPLICATION(size_t width, size_t height) : initialised{false}, window{nullptr}, running{false}, synth{Synth(maxPolyphony)}
 {
     initialise();
 
