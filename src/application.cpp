@@ -1,8 +1,8 @@
 #include <application.h>
 #include <synth.h>
 #include <iostream>
-// , synth{Synth(maxPolyphony)}
-APPLICATION::APPLICATION(size_t width, size_t height) : initialised{false}, window{nullptr}, running{false}
+
+APPLICATION::APPLICATION(size_t width, size_t height) : initialised{false}, window{nullptr}, running{false}, synth{Synth(maxPolyphony)}
 {
     initialise();
 
@@ -68,6 +68,46 @@ void APPLICATION::run()
     running = true;
     while (running)
     {
-        // handleEvents();
+        handleEvents();
+    }
+}
+
+void APPLICATION::handleEvents()
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+        // Detect which key is pressed down
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_a:
+                std::cout << "A IS PRESSED";
+                break;
+            }
+            break;
+
+        // Detect which key has been released
+        case SDL_KEYUP:
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_a:
+                std::cout << "A IS RELEASED";
+                break;
+            }
+            break;
+
+        // Detect if the user tries to close the window and if so stop running, which will call the destructor
+        case SDL_WINDOWEVENT:
+            switch (event.window.event)
+            {
+            case SDL_WINDOWEVENT_CLOSE:
+                running = false;
+                break;
+            }
+            break;
+        }
     }
 }
