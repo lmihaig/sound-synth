@@ -1,4 +1,8 @@
+### A platform independent sound synthethiser using SDL(Simple Directmedia Layer) for audio, keyboard input and graphics.
+
+Inspiration:
+
 https://www.youtube.com/watch?v=UvRU25T_XOg
 
 portable cross-platform middleware
-http://files.portaudio.com/docs/v19-doxydocs/
+https://github.com/libsdl-org/SDL

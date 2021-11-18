@@ -1,11 +1,13 @@
-#include <SDL.h>
-#include <iostream>
+#include <application.h>
 
-// need argc and argv for windows compatibility 
+#define WIDTH 1920 * 0.5
+#define HEIGHT 1080 * 0.5
+
+// need argc and argv for windows compatibility
 int main(int argc, char *argv[])
 {
-    SDL_Init(SDL_INIT_AUDIO);
-    std::cout << "TEST";
-    SDL_Quit();
+
+    APPLICATION app(WIDTH, HEIGHT);
+    app.run();
     return 0;
 }
