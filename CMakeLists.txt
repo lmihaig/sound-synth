@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12.0)
 project(sound-synth VERSION 0.1.0)
 
+set(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/artifacts)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/artifacts)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/artifacts)
@@ -36,4 +37,4 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include 
         PUBLIC external/SDL2/include
         )
-target_link_libraries(${PROJECT_NAME} SDL2 SDL2main)
+target_link_libraries(${PROJECT_NAME} SDL2main SDL2)

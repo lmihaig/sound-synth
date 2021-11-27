@@ -3,16 +3,10 @@
 #include <iostream>
 // synth{Synth(maxPolyphony)}
 APPLICATION::APPLICATION(size_t width, size_t height) : initialised{false}, window{nullptr}, running{false}
-
 {
     initialise();
 
     window = SDL_CreateWindow("sound-synth", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
-    if (!window)
-    {
-        std::cerr << "Application's window creation failed: " << SDL_GetError() << "\n";
-        return;
-    }
 
     SDL_AudioSpec desired;
     SDL_AudioSpec obtained;
@@ -29,42 +23,13 @@ APPLICATION::~APPLICATION()
 
 void APPLICATION::initialise()
 {
-    try
-    {
-        if (initialised)
-            throw 99;
-    }
-    catch (int x)
-    {
-        std::cerr << "Application already initialised: " << SDL_GetError() << "\n";
-    }
-
     int result = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS);
 
-    try
-    {
-        if (result != 0)
-            throw 100;
-    }
-    catch (int x)
-    {
-        std::cerr << "Application's initialisation failed: " << SDL_GetError() << "\n";
-    }
     initialised = true;
 }
 
 void APPLICATION::run()
 {
-
-    try
-    {
-        if (!initialised)
-            throw 101;
-    }
-    catch (int x)
-    {
-        std::cerr << "Application is trying to run but is not initialised" << SDL_GetError() << "\n";
-    }
 
     running = true;
     while (running)
@@ -85,7 +50,10 @@ void APPLICATION::handleEvents()
             switch (event.key.keysym.sym)
             {
             case SDLK_a:
-                std::cout << "A IS PRESSED";
+                std::cout << "A IS PRESSED\n";
+                break;
+            case SDLK_s:
+                std::cout << "S IS PRESSED\n";
                 break;
             }
             break;
@@ -95,7 +63,10 @@ void APPLICATION::handleEvents()
             switch (event.key.keysym.sym)
             {
             case SDLK_a:
-                std::cout << "A IS RELEASED";
+                std::cout << "A IS RELEASED\n";
+                break;
+            case SDLK_s:
+                std::cout << "S IS RELEASED\n";
                 break;
             }
             break;
