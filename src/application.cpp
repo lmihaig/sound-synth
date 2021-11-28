@@ -1,7 +1,7 @@
 #include <application.h>
 #include <synth.h>
 #include <iostream>
-// synth{Synth(maxPolyphony)}
+
 APPLICATION::APPLICATION(size_t width, size_t height) : initialised{false}, window{nullptr}, running{false}
 {
     initialise();
@@ -62,6 +62,35 @@ void APPLICATION::handleEvents()
         case SDL_KEYUP:
             switch (event.key.keysym.sym)
             {
+                // Select which instrument to use
+                // case SDLK_1:
+                //     changeInstrument(1);
+                //     break;
+                // case SDLK_2:
+                //     changeInstrument(2);
+                //     break;
+                // case SDLK_3:
+                //     changeInstrument(3);
+                //     break;
+                // case SDLK_4:
+                //     changeInstrument(4);
+                //     break;
+                // case SDLK_5:
+                //     changeInstrument(5);
+                //     break;
+                // case SDLK_6:
+                //     changeInstrument(6);
+                //     break;
+                // case SDLK_7:
+                //     changeInstrument(7);
+                //     break;
+                // case SDLK_8:
+                //     changeInstrument(8);
+                //     break;
+                // case SDLK_9:
+                //     changeInstrument(9);
+                //     break;
+
             case SDLK_a:
                 std::cout << "A IS RELEASED\n";
                 break;
