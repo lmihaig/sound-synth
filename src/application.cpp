@@ -12,18 +12,19 @@ APPLICATION::APPLICATION(const int width, const int height)
 
     SDL_zero(desired);
     desired.silence = 0;
-    desired.freq = sampleRate;
+    desired.freq = frequency;
     desired.channels = channels;
-    desired.samples = bufferSize;
+    desired.samples = samples;
     desired.userdata = &userdata;
     desired.callback = audiocallback;
-    desired.format = AUDIO_F32SYS;
+    desired.format = AUDIO_S32SYS;
     audioDevice = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 1);
     SDL_PauseAudioDevice(audioDevice, 0);
 }
 
 APPLICATION::~APPLICATION()
 {
+    std::cout << "test";
     SDL_GL_DeleteContext(context);
     SDL_CloseAudioDevice(audioDevice);
     SDL_DestroyWindow(window);
@@ -208,12 +209,15 @@ void APPLICATION::handleEvents()
 
 void APPLICATION::audiocallback(void *userdata, Uint8 *stream, int len)
 {
-    std::cout << "test";
-
-    auto length = len / 2;
     SDL_memset(stream, 0, len);
-    for (int i = 0; i < length; i++)
+    float *buffer = reinterpret_cast<float *>(stream);
+
+    int length = len / 2; // 2 bytes per sample for AUDIO_S16SYS
+    int &sample_nr(*(int *)userdata);
+
+    for (int i = 0; i < length; i++, sample_nr++)
     {
-        stream[i] = rand();
+        double time = (double)sample_nr / (double)48000;
+        buffer[i] = (Sint16)(28000 * sin(2.0f * M_PI * 441.0f * time)); // render 441 HZ sine wave
     }
 }

@@ -1,16 +1,16 @@
 #pragma once
 #include <SDL.h>
 #include <synth.h>
+
 class APPLICATION
 {
     synth<double> keyboardsynth;
     synth<double> sequencer;
 
     std::vector<int> userdata;
-    const unsigned int sampleRate = 48000;
-    const unsigned int frequencyBins = 512;
+    const unsigned int frequency = 48000;
     const Uint8 channels = 2;
-    const Uint16 bufferSize = 1024;
+    const Uint16 samples = 1024;
 
     bool initialised = false;
     bool running = true;
