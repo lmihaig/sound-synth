@@ -1,18 +1,28 @@
 #pragma once
 #include <iostream>
+#include <numbers>
+#include <string>
 #include <envelopeADSR.h>
 
+template <class T>
+class note;
 template <class T>
 class instrument_base
 {
     T volume;
+    T maxLifeTime;
     envelopeADSR<T> env;
+    const std::string name;
 
 public:
-    static const std::string name;
-    static const unsigned int id;
-    instrument_base();
-    virtual T sound(const T time);
+    instrument_base(const T volume, const T maxLifeTime, envelopeADSR<T> env, const std::string name);
+    virtual T sound(const T time, note<T> n, bool &noteFinished);
+    T hz_to_rad(const T hertz);
+    T oscSine(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0);
+    T oscSquare(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0);
+    T oscTriange(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0);
+    T oscSaw(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0, const T steps = 50);
+    T oscRand();
 };
 
 template <class T>

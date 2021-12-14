@@ -1,8 +1,7 @@
 #include <application.h>
-#include <synth.h>
 #include <iostream>
 
-APPLICATION::APPLICATION(size_t width, size_t height) : initialised{false}, window{nullptr}, running{false}
+APPLICATION::APPLICATION(const int width, const int height)
 {
     initialise();
 
@@ -10,7 +9,17 @@ APPLICATION::APPLICATION(size_t width, size_t height) : initialised{false}, wind
 
     SDL_AudioSpec desired;
     SDL_AudioSpec obtained;
-    audioDevice = SDL_OpenAudioDevice(nullptr, 0, &desired, &obtained, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
+
+    SDL_zero(desired);
+    desired.silence = 0;
+    desired.freq = sampleRate;
+    desired.channels = channels;
+    desired.samples = bufferSize;
+    desired.userdata = &userdata;
+    desired.callback = audiocallback;
+    desired.format = AUDIO_F32SYS;
+    audioDevice = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 1);
+    SDL_PauseAudioDevice(audioDevice, 0);
 }
 
 APPLICATION::~APPLICATION()
@@ -49,19 +58,6 @@ void APPLICATION::handleEvents()
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym)
             {
-            case SDLK_a:
-                std::cout << "A IS PRESSED\n";
-                break;
-            case SDLK_s:
-                std::cout << "S IS PRESSED\n";
-                break;
-            }
-            break;
-
-        // Detect which key has been released
-        case SDL_KEYUP:
-            switch (event.key.keysym.sym)
-            {
                 // Select which instrument to use
                 // case SDLK_1:
                 //     changeInstrument(1);
@@ -90,12 +86,109 @@ void APPLICATION::handleEvents()
                 // case SDLK_9:
                 //     changeInstrument(9);
                 //     break;
+            case SDLK_z:
+                std::cout << "Z IS PRESSED\n";
+                keyboardsynth.synthprint(6);
+                break;
+            case SDLK_s:
+                std::cout << "S IS PRESSED\n";
+                break;
+            case SDLK_x:
+                std::cout << "X IS PRESSED\n";
+                break;
+            case SDLK_c:
+                std::cout << "C IS PRESSED\n";
+                break;
+            case SDLK_f:
+                std::cout << "F IS PRESSED\n";
+                break;
+            case SDLK_v:
+                std::cout << "V IS PRESSED\n";
+                break;
+            case SDLK_g:
+                std::cout << "G IS PRESSED\n";
+                break;
+            case SDLK_b:
+                std::cout << "B IS PRESSED\n";
+                break;
+            case SDLK_n:
+                std::cout << "N IS PRESSED\n";
+                break;
+            case SDLK_j:
+                std::cout << "J IS PRESSED\n";
+                break;
+            case SDLK_m:
+                std::cout << "M IS PRESSED\n";
+                break;
+            case SDLK_k:
+                std::cout << "K IS PRESSED\n";
+                break;
+            case SDLK_COMMA:
+                std::cout << ", IS PRESSED\n";
+                break;
+            case SDLK_l:
+                std::cout << "L IS PRESSED\n";
+                break;
+            case SDLK_PERIOD:
+                std::cout << ". IS PRESSED\n";
+                break;
+            case SDLK_SLASH:
+                std::cout << "/ IS PRESSED\n";
+                break;
+            }
+            break;
 
-            case SDLK_a:
-                std::cout << "A IS RELEASED\n";
+        // Detect which key has been released
+        case SDL_KEYUP:
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_z:
+                std::cout << "Z IS RELEASED\n";
                 break;
             case SDLK_s:
                 std::cout << "S IS RELEASED\n";
+                break;
+            case SDLK_x:
+                std::cout << "X IS RELEASED\n";
+                break;
+            case SDLK_c:
+                std::cout << "C IS RELEASED\n";
+                break;
+            case SDLK_f:
+                std::cout << "F IS RELEASED\n";
+                break;
+            case SDLK_v:
+                std::cout << "V IS RELEASED\n";
+                break;
+            case SDLK_g:
+                std::cout << "G IS RELEASED\n";
+                break;
+            case SDLK_b:
+                std::cout << "B IS RELEASED\n";
+                break;
+            case SDLK_n:
+                std::cout << "N IS RELEASED\n";
+                break;
+            case SDLK_j:
+                std::cout << "J IS RELEASED\n";
+                break;
+            case SDLK_m:
+                std::cout << "M IS RELEASED\n";
+                break;
+            case SDLK_k:
+                std::cout << "K IS RELEASED\n";
+                break;
+            case SDLK_COMMA:
+                std::cout << ", IS RELEASED\n";
+                break;
+            case SDLK_l:
+                std::cout << "L IS RELEASED\n";
+                break;
+            case SDLK_PERIOD:
+                std::cout << ". IS RELEASED\n";
+                break;
+            case SDLK_SLASH:
+                std::cout << "/ IS RELEASED\n";
                 break;
             }
             break;
@@ -110,5 +203,17 @@ void APPLICATION::handleEvents()
             }
             break;
         }
+    }
+}
+
+void APPLICATION::audiocallback(void *userdata, Uint8 *stream, int len)
+{
+    std::cout << "test";
+
+    auto length = len / 2;
+    SDL_memset(stream, 0, len);
+    for (int i = 0; i < length; i++)
+    {
+        stream[i] = rand();
     }
 }

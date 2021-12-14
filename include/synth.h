@@ -1,6 +1,11 @@
 #pragma once
-// #include <note.h>
+#include <note.h>
+#include <vector>
 
-class Synth
+// Type determines the quality of the audio short < int < float < double
+template <class T>
+class synth
 {
+public:
+    void synthprint(int n);
 };

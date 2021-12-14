@@ -1,6 +1,5 @@
 #pragma once
 
-// Type determines the quality of the audio short < int < float < double
 template <class T>
 class envelopeADSR
 {
