@@ -11,7 +11,7 @@ portable cross-platform middleware
 https://github.com/libsdl-org/SDL
 
 
-TODO:
+<!-- TODO:
 - for project:
     - exceptions that make sense
     - design patterns i think
@@ -19,4 +19,4 @@ TODO:
 - extra:
     - gui-ish
     - sequencer(needs gui)
-    - something to visualize sound waves maybe
+    - something to visualize sound waves maybe -->
