@@ -1,6 +1,7 @@
 #pragma once
 #include <synth.h>
 #include <map>
+#include <mutex>
 
 template <class T>
 class APPLICATION
@@ -8,19 +9,17 @@ class APPLICATION
     struct synthDataStruct
     {
         T frequency;
-        Uint8 channels;
+        T ticks;
         Uint16 samples;
-        int ticks;
         std::shared_ptr<std::vector<note<T>>> notes;
-        std::shared_ptr<std::vector<std::vector<T>>> voiceBuffers;
     };
+
+
 
     synth<T> keyboardSynth;
     synthDataStruct synthData;
 
     std::map<SDL_Keycode, bool> pressedKeys;
-    std::vector<std::vector<T>> voiceBuffers;
-    std::shared_ptr<std::vector<note<T>>> notes;
 
     bool initialised = false;
     bool running = true;

@@ -1,27 +1,20 @@
 #include <application.h>
 #include <thread>
+std::mutex synthDataMutex;
 
 template <class T>
 APPLICATION<T>::APPLICATION(const int width, const int height)
 {
     initialise();
 
-    voiceBuffers.reserve(keyboardSynth.maxVoices);
-    for (auto voice = 0; voice < keyboardSynth.maxVoices; voice++)
-    {
-        voiceBuffers.push_back(std::vector<T>(keyboardSynth.samples * keyboardSynth.channels));
-        std::fill_n(voiceBuffers[voice].begin(), keyboardSynth.samples * keyboardSynth.channels, 0.0f);
-    }
-
     window = SDL_CreateWindow("sound-synth", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, 0);
 
     synthData.frequency = keyboardSynth.frequency;
-    synthData.channels = keyboardSynth.channels;
     synthData.samples = keyboardSynth.samples;
     synthData.ticks = 0;
     synthData.notes = keyboardSynth.notes;
-    synthData.voiceBuffers = std::make_shared<std::vector<std::vector<T>>>(voiceBuffers);
+
     SDL_AudioSpec desired;
     SDL_AudioSpec obtained;
 
@@ -62,7 +55,6 @@ void APPLICATION<T>::run()
     while (running)
     {
         handleEvents();
-        // keyboardSynth.clearNotes();
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
@@ -71,6 +63,7 @@ void APPLICATION<T>::run()
 template <class T>
 void APPLICATION<T>::handleEvents()
 {
+    std::lock_guard<std::mutex> guard(synthDataMutex);
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
@@ -230,44 +223,32 @@ void APPLICATION<T>::handleEvents()
 template <class T>
 void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
 {
+    std::lock_guard<std::mutex> guard(synthDataMutex);
     synthDataStruct *synthData = reinterpret_cast<synthDataStruct *>(userdata);
-    T secondPerTick = 1.f / static_cast<T>(synthData->frequency);
+    T secondPerTick = 1.0 / static_cast<T>(synthData->frequency);
+    int sizePerSample = static_cast<int>(sizeof(T));
+
     SDL_memset(stream, 0, len);
     T *buffer = reinterpret_cast<T *>(stream);
-    int sizePerSample = static_cast<int>(sizeof(T));
-    std::shared_ptr<std::vector<std::vector<T>>> voiceBuffers = synthData->voiceBuffers;
 
-    std::vector<std::thread> threads;
-    for (auto &note : *synthData->notes)
+    for (int i = 0; i < len; i++)
     {
-        threads.push_back(std::thread(fillVoiceBuffer,
-                                      instrument,
-                                      std::ref(voiceBuffers->at(note.voice)),
-                                      std::ref(note),
-                                      synthData->ticks,
-                                      secondPerTick));
-    }
-    for (auto &t : threads)
-    {
-        t.join();
-    }
-    for (int i = 0; i < lengthInBytes / sizePerSample; i += 2)
-    {
-        int left = i;
-        int right = i + 1;
-        float sumLeft = .0f;
-        float sumRight = .0f;
-
-        for (const auto &note : *synthData->notes)
+        T mixedOutput = 0;
+        for (auto &n : *synthData->notes)
         {
-            sumLeft += voiceBuffers->at(note.voice)[left];
-            sumRight += voiceBuffers->at(note.voice)[right];
+            bool noteFinished = false;
+            // T sound = 0;
+            // if (n.timbre != nullptr)
+            //     sound = n.timbre.sound(synthData->ticks, n, noteFinished);
+            mixedOutput += n.timbre.sound(synthData->ticks, n, noteFinished);
+            if (noteFinished)
+                n.active = false;
         }
 
-        buffer[left] = sumLeft;
-        buffer[right] = sumRight;
+        buffer[i] = mixedOutput;
+        buffer[i + 1] = mixedOutput;
     }
-    synthData->ticks += ((len / sizePerSample - 1) / 2) + 1;
+    synthData->ticks = synthData->ticks + secondPerTick;
 }
 
 template class APPLICATION<short>;

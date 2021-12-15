@@ -29,3 +29,8 @@ T instrument_base<T>::oscRand()
 {
     return 2.0 * ((T)rand() / (T)RAND_MAX) - 1.0;
 }
+
+template class instrument_base<short>;
+template class instrument_base<int>;
+template class instrument_base<float>;
+template class instrument_base<double>;
