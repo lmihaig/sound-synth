@@ -1,11 +1,12 @@
 #include <application.h>
 #include <iostream>
-
-APPLICATION::APPLICATION(const int width, const int height)
+template <class T>
+APPLICATION<T>::APPLICATION(const int width, const int height)
 {
     initialise();
 
     window = SDL_CreateWindow("sound-synth", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
+    renderer = SDL_CreateRenderer(window, -1, 0);
 
     SDL_AudioSpec desired;
     SDL_AudioSpec obtained;
@@ -15,40 +16,46 @@ APPLICATION::APPLICATION(const int width, const int height)
     desired.freq = frequency;
     desired.channels = channels;
     desired.samples = samples;
-    desired.userdata = &userdata;
-    desired.callback = audiocallback;
+    // desired.userdata = &userdata;
+    desired.userdata = &keyboardSynth.synthData;
+    desired.callback = audioCallback;
     desired.format = AUDIO_S32SYS;
     audioDevice = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 1);
+
+    // Default state is paused, this unpauses it
     SDL_PauseAudioDevice(audioDevice, 0);
 }
-
-APPLICATION::~APPLICATION()
+template <class T>
+APPLICATION<T>::~APPLICATION()
 {
-    std::cout << "test";
     SDL_GL_DeleteContext(context);
     SDL_CloseAudioDevice(audioDevice);
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
-
-void APPLICATION::initialise()
+template <class T>
+void APPLICATION<T>::initialise()
 {
     int result = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS);
 
     initialised = true;
 }
-
-void APPLICATION::run()
+template <class T>
+void APPLICATION<T>::run()
 {
 
     running = true;
     while (running)
     {
         handleEvents();
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
+        SDL_RenderPresent(renderer);
     }
 }
-
-void APPLICATION::handleEvents()
+template <class T>
+void APPLICATION<T>::handleEvents()
 {
     SDL_Event event;
     while (SDL_PollEvent(&event))
@@ -89,7 +96,7 @@ void APPLICATION::handleEvents()
                 //     break;
             case SDLK_z:
                 std::cout << "Z IS PRESSED\n";
-                keyboardsynth.synthprint(6);
+                keyboardSynth.synthprint(6);
                 break;
             case SDLK_s:
                 std::cout << "S IS PRESSED\n";
@@ -207,17 +214,15 @@ void APPLICATION::handleEvents()
     }
 }
 
-void APPLICATION::audiocallback(void *userdata, Uint8 *stream, int len)
+template <class T>
+void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
 {
+
     SDL_memset(stream, 0, len);
-    float *buffer = reinterpret_cast<float *>(stream);
-
-    int length = len / 2; // 2 bytes per sample for AUDIO_S16SYS
-    int &sample_nr(*(int *)userdata);
-
-    for (int i = 0; i < length; i++, sample_nr++)
-    {
-        double time = (double)sample_nr / (double)48000;
-        buffer[i] = (Sint16)(28000 * sin(2.0f * M_PI * 441.0f * time)); // render 441 HZ sine wave
-    }
+    T *buffer = reinterpret_cast<T *>(stream);
 }
+
+template class APPLICATION<short>;
+template class APPLICATION<int>;
+template class APPLICATION<float>;
+template class APPLICATION<double>;

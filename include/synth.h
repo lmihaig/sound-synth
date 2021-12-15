@@ -2,10 +2,10 @@
 #include <note.h>
 #include <vector>
 
-// Type determines the quality of the audio short < int < float < double
 template <class T>
 class synth
 {
 public:
+    std::vector<note<T>> synthData;
     void synthprint(int n);
 };
