@@ -14,10 +14,9 @@ class APPLICATION
         std::shared_ptr<std::vector<note<T>>> notes;
     };
 
-
-
+    static std::mutex synthDataMutex;
+    static synthDataStruct synthData;
     synth<T> keyboardSynth;
-    synthDataStruct synthData;
 
     std::map<SDL_Keycode, bool> pressedKeys;
 

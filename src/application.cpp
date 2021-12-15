@@ -1,6 +1,5 @@
 #include <application.h>
 #include <thread>
-std::mutex synthDataMutex;
 
 template <class T>
 APPLICATION<T>::APPLICATION(const int width, const int height)
@@ -231,7 +230,7 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
     SDL_memset(stream, 0, len);
     T *buffer = reinterpret_cast<T *>(stream);
 
-    for (int i = 0; i < len; i++)
+    for (int i = 0; i < len / sizePerSample; i++)
     {
         T mixedOutput = 0;
         for (auto &n : *synthData->notes)
