@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include <numbers>
 #include <string>
 #include <envelopeADSR.h>
 
@@ -9,6 +8,7 @@ class note;
 template <class T>
 class instrument_base
 {
+    static constexpr float pi = 3.1415926535;
     T volume;
     T maxLifeTime;
     envelopeADSR<T> env;

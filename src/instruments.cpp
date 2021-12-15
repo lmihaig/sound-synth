@@ -14,7 +14,7 @@ T instrument_base<T>::sound(const T time, note<T> n, bool &noteFinished)
 template <class T>
 T instrument_base<T>::hz_to_rad(T hertz)
 {
-    return hertz * 2 * std::numbers::pi;
+    return hertz * 2 * pi;
 }
 
 template <class T>

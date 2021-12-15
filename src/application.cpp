@@ -1,23 +1,36 @@
 #include <application.h>
-#include <iostream>
+#include <thread>
+
 template <class T>
 APPLICATION<T>::APPLICATION(const int width, const int height)
 {
     initialise();
 
+    voiceBuffers.reserve(keyboardSynth.maxVoices);
+    for (auto voice = 0; voice < keyboardSynth.maxVoices; voice++)
+    {
+        voiceBuffers.push_back(std::vector<T>(keyboardSynth.samples * keyboardSynth.channels));
+        std::fill_n(voiceBuffers[voice].begin(), keyboardSynth.samples * keyboardSynth.channels, 0.0f);
+    }
+
     window = SDL_CreateWindow("sound-synth", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, 0);
 
+    synthData.frequency = keyboardSynth.frequency;
+    synthData.channels = keyboardSynth.channels;
+    synthData.samples = keyboardSynth.samples;
+    synthData.ticks = 0;
+    synthData.notes = keyboardSynth.notes;
+    synthData.voiceBuffers = std::make_shared<std::vector<std::vector<T>>>(voiceBuffers);
     SDL_AudioSpec desired;
     SDL_AudioSpec obtained;
 
     SDL_zero(desired);
     desired.silence = 0;
-    desired.freq = frequency;
-    desired.channels = channels;
-    desired.samples = samples;
-    // desired.userdata = &userdata;
-    desired.userdata = &keyboardSynth.synthData;
+    desired.freq = keyboardSynth.frequency;
+    desired.channels = keyboardSynth.channels;
+    desired.samples = keyboardSynth.samples;
+    desired.userdata = &synthData;
     desired.callback = audioCallback;
     desired.format = AUDIO_S32SYS;
     audioDevice = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 1);
@@ -49,6 +62,7 @@ void APPLICATION<T>::run()
     while (running)
     {
         handleEvents();
+        // keyboardSynth.clearNotes();
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
@@ -96,7 +110,6 @@ void APPLICATION<T>::handleEvents()
                 //     break;
             case SDLK_z:
                 std::cout << "Z IS PRESSED\n";
-                keyboardSynth.synthprint(6);
                 break;
             case SDLK_s:
                 std::cout << "S IS PRESSED\n";
@@ -217,9 +230,44 @@ void APPLICATION<T>::handleEvents()
 template <class T>
 void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
 {
-
+    synthDataStruct *synthData = reinterpret_cast<synthDataStruct *>(userdata);
+    T secondPerTick = 1.f / static_cast<T>(synthData->frequency);
     SDL_memset(stream, 0, len);
     T *buffer = reinterpret_cast<T *>(stream);
+    int sizePerSample = static_cast<int>(sizeof(T));
+    std::shared_ptr<std::vector<std::vector<T>>> voiceBuffers = synthData->voiceBuffers;
+
+    std::vector<std::thread> threads;
+    for (auto &note : *synthData->notes)
+    {
+        threads.push_back(std::thread(fillVoiceBuffer,
+                                      instrument,
+                                      std::ref(voiceBuffers->at(note.voice)),
+                                      std::ref(note),
+                                      synthData->ticks,
+                                      secondPerTick));
+    }
+    for (auto &t : threads)
+    {
+        t.join();
+    }
+    for (int i = 0; i < lengthInBytes / sizePerSample; i += 2)
+    {
+        int left = i;
+        int right = i + 1;
+        float sumLeft = .0f;
+        float sumRight = .0f;
+
+        for (const auto &note : *synthData->notes)
+        {
+            sumLeft += voiceBuffers->at(note.voice)[left];
+            sumRight += voiceBuffers->at(note.voice)[right];
+        }
+
+        buffer[left] = sumLeft;
+        buffer[right] = sumRight;
+    }
+    synthData->ticks += ((len / sizePerSample - 1) / 2) + 1;
 }
 
 template class APPLICATION<short>;
