@@ -11,7 +11,10 @@ portable cross-platform middleware
 https://github.com/libsdl-org/SDL
 
 
-TODO:
+
+    TODO:
+    -functionalitati: adaugat note in vectorul de note, scos notele din acesta, schimbat instrument
+
     -constructori
     -cc, op= pentru note si instruments
     -op<< pentru note si instruments
