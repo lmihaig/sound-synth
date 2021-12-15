@@ -11,8 +11,13 @@ portable cross-platform middleware
 https://github.com/libsdl-org/SDL
 
 
-<!-- TODO:
-- for project:
-    - exceptions that make sense
-    - design patterns
--->
+TODO:
+    -constructori
+    -cc, op= pentru note si instruments
+    -op<< pentru note si instruments
+    -modificat mai multe in const
+
+    -problemele de mostenire
+    -exceptii
+
+    -design patterns
