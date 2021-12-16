@@ -1,5 +1,4 @@
 #include <application.h>
-#include <thread>
 
 template <class T>
 APPLICATION<T>::APPLICATION(const int width, const int height)

@@ -1,6 +1,32 @@
 #include <envelopeADSR.h>
 
 template <class T>
+envelopeADSR<T> &envelopeADSR<T>::operator=(const envelopeADSR<T> &copy)
+{
+    if (this != &copy)
+    {
+        this->attackLevel = copy.attackLevel;
+        this->attackTime = copy.attackTime;
+        this->decayTime = copy.decayTime;
+        this->sustainLevel = copy.sustainLevel;
+        this->releaseTime = copy.releaseTime;
+    }
+    return *this;
+}
+
+template <class T>
+bool envelopeADSR<T>::operator==(const envelopeADSR<T> &rhs) const
+{
+    return attackLevel == rhs.attackLevel && attackTime == rhs.attackTime && decayTime == rhs.decayTime && sustainLevel == rhs.sustainLevel && releaseTime == rhs.releaseTime;
+}
+
+template <class T>
+bool envelopeADSR<T>::operator!=(const envelopeADSR<T> &rhs) const
+{
+    return !(rhs == *this);
+}
+
+template <class T>
 envelopeADSR<T>::envelopeADSR(T attackLevel, T attackTime, T decayTime, T sustainLevel, T releaseTime) : attackLevel{attackLevel}, attackTime{attackTime}, decayTime{decayTime}, sustainLevel{sustainLevel}, releaseTime{releaseTime}
 {
 }

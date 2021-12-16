@@ -5,6 +5,14 @@
 
 template <class T>
 class note;
+
+template <typename T>
+class instrument_base;
+
+template <class T>
+std::ostream &operator<<(std::ostream &os, const instrument_base<T> &n);
+
+
 template <class T>
 class instrument_base
 {
@@ -23,6 +31,11 @@ public:
     T oscTriange(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0);
     T oscSaw(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0, const T steps = 50);
     T oscRand();
+
+    bool operator==(const instrument_base<T> &rhs) const;
+    bool operator!=(const instrument_base<T> &rhs) const;
+    instrument_base<T> &operator=(const instrument_base<T> &copy);
+    friend std::ostream &operator<<(std::ostream &os, const instrument_base<T> &inst);
 };
 
 template <class T>

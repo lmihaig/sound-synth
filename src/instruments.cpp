@@ -1,6 +1,39 @@
 #include <instruments.h>
 
 template <class T>
+instrument_base<T> &instrument_base<T>::operator=(const instrument_base<T> &copy)
+{
+    if (this != &copy)
+    {
+        this->volume = copy.volume;
+        this->maxLifeTime = copy.maxLifeTime;
+        this.env = copy.env;
+        this.name = copy.name;
+    }
+    return *this;
+}
+
+template <class T>
+bool instrument_base<T>::operator==(const instrument_base<T> &rhs) const
+{
+    return volume == rhs.volume && maxLifeTime == rhs.maxLifeTime && env == rhs.env && name == rhs.name;
+}
+
+template <class T>
+bool instrument_base<T>::operator!=(const instrument_base<T> &rhs) const
+{
+    return !(rhs == *this);
+}
+
+template <class T>
+std::ostream &operator<<(std::ostream &os, const instrument_base<T> &inst)
+{
+    os << "Instrument: " << inst.name << "\n";
+
+    return os;
+}
+
+template <class T>
 instrument_base<T>::instrument_base(const T volume, const T maxLifeTime, envelopeADSR<T> env, const std::string name) : volume{volume}, maxLifeTime{maxLifeTime}, name{name}
 {
 }
