@@ -15,8 +15,6 @@ https://github.com/libsdl-org/SDL
     TODO:
     -functionalitati: adaugat note in vectorul de note, scos notele din acesta, schimbat instrument, testat daca chiar scoate sunet
 
-    -rezolvat ciclitatea din note si instruments
-
     -constructori
     -modificat mai multe in const
 
