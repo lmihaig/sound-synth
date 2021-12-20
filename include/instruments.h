@@ -12,7 +12,6 @@ class instrument_base;
 template <class T>
 std::ostream &operator<<(std::ostream &os, const instrument_base<T> &n);
 
-
 template <class T>
 class instrument_base
 {
@@ -20,11 +19,11 @@ class instrument_base
     T volume;
     T maxLifeTime;
     envelopeADSR<T> env;
-    const std::string name;
+    std::string name;
 
 public:
     instrument_base(const T volume, const T maxLifeTime, envelopeADSR<T> env, const std::string name);
-    virtual T sound(const T time, note<T> n, bool &noteFinished);
+    virtual T sound(const T time, note<T> &n, bool &noteFinished);
     T hz_to_rad(const T hertz);
     T oscSine(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0);
     T oscSquare(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0);

@@ -1,6 +1,9 @@
 #include <application.h>
 
 template <class T>
+std::mutex APPLICATION<T>::synthDataMutex;
+
+template <class T>
 APPLICATION<T>::APPLICATION(const int width, const int height)
 {
     initialise();
@@ -9,7 +12,6 @@ APPLICATION<T>::APPLICATION(const int width, const int height)
     renderer = SDL_CreateRenderer(window, -1, 0);
 
     synthData.frequency = keyboardSynth.frequency;
-    synthData.samples = keyboardSynth.samples;
     synthData.ticks = 0;
     synthData.notes = keyboardSynth.notes;
 
@@ -221,6 +223,7 @@ void APPLICATION<T>::handleEvents()
 template <class T>
 void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
 {
+
     std::lock_guard<std::mutex> guard(synthDataMutex);
     synthDataStruct *synthData = reinterpret_cast<synthDataStruct *>(userdata);
     T secondPerTick = 1.0 / static_cast<T>(synthData->frequency);

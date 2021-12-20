@@ -6,17 +6,18 @@
 template <class T>
 class APPLICATION
 {
+private:
+    synth<T> keyboardSynth;
+
     struct synthDataStruct
     {
-        T frequency;
-        T ticks;
-        Uint16 samples;
-        std::shared_ptr<std::vector<note<T>>> notes;
+        inline static T frequency;
+        inline static T ticks;
+        inline static std::shared_ptr<std::vector<note<T>>> notes;
     };
 
     static std::mutex synthDataMutex;
-    static synthDataStruct synthData;
-    synth<T> keyboardSynth;
+    inline static synthDataStruct synthData;
 
     std::map<SDL_Keycode, bool> pressedKeys;
 

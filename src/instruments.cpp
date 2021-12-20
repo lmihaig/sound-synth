@@ -7,8 +7,8 @@ instrument_base<T> &instrument_base<T>::operator=(const instrument_base<T> &copy
     {
         this->volume = copy.volume;
         this->maxLifeTime = copy.maxLifeTime;
-        this.env = copy.env;
-        this.name = copy.name;
+        this->env = copy.env;
+        this->name = copy.name;
     }
     return *this;
 }
@@ -39,7 +39,7 @@ instrument_base<T>::instrument_base(const T volume, const T maxLifeTime, envelop
 }
 
 template <class T>
-T instrument_base<T>::sound(const T time, note<T> n, bool &noteFinished)
+T instrument_base<T>::sound(const T time, note<T> &n, bool &noteFinished)
 {
     return 0;
 }
