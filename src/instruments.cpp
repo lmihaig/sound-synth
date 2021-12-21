@@ -1,4 +1,5 @@
 #include <instruments.h>
+#include <cmath>
 
 template <class T>
 instrument_base<T> &instrument_base<T>::operator=(const instrument_base<T> &copy)
@@ -53,8 +54,8 @@ T instrument_base<T>::hz_to_rad(T hertz)
 template <class T>
 T instrument_base<T>::oscSine(const T time, const T frequency, const T lowfreq, const T lowamp)
 {
-    T freq = hz_to_rad(frequency) * time + lowamp * frequency * (sin(hz_to_rad(lowfreq) * time));
-    return sin(freq);
+    T freq = hz_to_rad(frequency) * time + lowamp * frequency * (std::sin(hz_to_rad(lowfreq) * time));
+    return std::sin(freq);
 }
 
 template <class T>
