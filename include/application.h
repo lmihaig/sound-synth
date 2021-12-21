@@ -6,14 +6,13 @@
 template <class T>
 class APPLICATION
 {
-private:
     synth<T> keyboardSynth;
 
     struct synthDataStruct
     {
-        inline static T frequency;
-        inline static T ticks;
-        inline static std::shared_ptr<std::vector<note<T>>> notes;
+        T frequency;
+        T ticks;
+        std::shared_ptr<std::vector<note<T>>> notes;
     };
 
     static std::mutex synthDataMutex;

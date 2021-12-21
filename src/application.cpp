@@ -50,12 +50,12 @@ void APPLICATION<T>::initialise()
 template <class T>
 void APPLICATION<T>::run()
 {
-
     running = true;
     while (running)
     {
         handleEvents();
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
     }
@@ -63,6 +63,7 @@ void APPLICATION<T>::run()
 template <class T>
 void APPLICATION<T>::handleEvents()
 {
+
     std::lock_guard<std::mutex> guard(synthDataMutex);
     SDL_Event event;
     while (SDL_PollEvent(&event))
@@ -225,8 +226,8 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
 {
 
     std::lock_guard<std::mutex> guard(synthDataMutex);
-    synthDataStruct *synthData = reinterpret_cast<synthDataStruct *>(userdata);
-    T secondPerTick = 1.0 / static_cast<T>(synthData->frequency);
+    synthDataStruct *curSynthData = reinterpret_cast<synthDataStruct *>(userdata);
+    T secondPerTick = 1.0 / static_cast<T>(curSynthData->frequency);
     int sizePerSample = static_cast<int>(sizeof(T));
 
     SDL_memset(stream, 0, len);
@@ -235,13 +236,13 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
     for (int i = 0; i < len / sizePerSample; i++)
     {
         T mixedOutput = 0;
-        for (auto &n : *synthData->notes)
+        for (auto &n : *curSynthData->notes)
         {
             bool noteFinished = false;
             // T sound = 0;
             // if (n.timbre != nullptr)
-            //     sound = n.timbre.sound(synthData->ticks, n, noteFinished);
-            mixedOutput += n.timbre.sound(synthData->ticks, n, noteFinished);
+            //     sound = n.timbre.sound(curSynthData->ticks, n, noteFinished);
+            mixedOutput += n.timbre.sound(curSynthData->ticks, n, noteFinished);
             if (noteFinished)
                 n.active = false;
         }
@@ -249,7 +250,7 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
         buffer[i] = mixedOutput;
         buffer[i + 1] = mixedOutput;
     }
-    synthData->ticks = synthData->ticks + secondPerTick;
+    curSynthData->ticks = curSynthData->ticks + secondPerTick;
 }
 
 template class APPLICATION<short>;
