@@ -11,18 +11,17 @@ APPLICATION<T>::APPLICATION(const int width, const int height)
     window = SDL_CreateWindow("sound-synth", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, 0);
 
-    synthData.frequency = keyboardSynth.frequency;
+    synthData.frequency = 0;
     synthData.ticks = 0;
-    synthData.notes = keyboardSynth.notes;
 
     SDL_AudioSpec desired;
     SDL_AudioSpec obtained;
 
     SDL_zero(desired);
     desired.silence = 0;
-    desired.freq = keyboardSynth.frequency;
-    desired.channels = keyboardSynth.channels;
-    desired.samples = keyboardSynth.samples;
+    desired.freq = synthData.frequency;
+    desired.channels = channels;
+    desired.samples = samples;
     desired.userdata = &synthData;
     desired.callback = audioCallback;
     desired.format = AUDIO_S32SYS;
@@ -236,7 +235,7 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
     for (int i = 0; i < len / sizePerSample; i++)
     {
         T mixedOutput = 0;
-        for (auto &n : *curSynthData->notes)
+        for (auto &n : curSynthData->notes)
         {
             bool noteFinished = false;
             // T sound = 0;

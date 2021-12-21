@@ -1,18 +1,17 @@
 #pragma once
-#include <synth.h>
+#include <note.h>
 #include <map>
 #include <mutex>
+#include <vector>
 
 template <class T>
 class APPLICATION
 {
-    synth<T> keyboardSynth;
-
     struct synthDataStruct
     {
-        T frequency;
+        T frequency = 48000;
         T ticks;
-        std::shared_ptr<std::vector<note<T>>> notes;
+        std::vector<note<T>> notes;
     };
 
     static std::mutex synthDataMutex;
@@ -22,6 +21,9 @@ class APPLICATION
 
     bool initialised = false;
     bool running = true;
+
+    const Uint16 samples = 1024;
+    const Uint8 channels = 2;
 
     SDL_Renderer *renderer = nullptr;
     SDL_Window *window = nullptr;
