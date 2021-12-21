@@ -1,7 +1,7 @@
 #pragma once
 #include <note.h>
 #include <vector>
-
+#include <memory>
 
 template <class T>
 class synth
