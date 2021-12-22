@@ -11,7 +11,7 @@ APPLICATION<T>::APPLICATION(const int width, const int height)
     window = SDL_CreateWindow("sound-synth", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, 0);
 
-    synthData.frequency = 0;
+    synthData.frequency = 48000;
     synthData.ticks = 0;
 
     SDL_AudioSpec desired;
@@ -102,51 +102,67 @@ void APPLICATION<T>::handleEvents()
                 //     changeInstrument(9);
                 //     break;
             case SDLK_z:
+                addNote(SDLK_z);
                 std::cout << "Z IS PRESSED\n";
                 break;
             case SDLK_s:
+                addNote(SDLK_s);
                 std::cout << "S IS PRESSED\n";
                 break;
             case SDLK_x:
+                addNote(SDLK_x);
                 std::cout << "X IS PRESSED\n";
                 break;
             case SDLK_c:
+                addNote(SDLK_c);
                 std::cout << "C IS PRESSED\n";
                 break;
             case SDLK_f:
+                addNote(SDLK_f);
                 std::cout << "F IS PRESSED\n";
                 break;
             case SDLK_v:
+                addNote(SDLK_v);
                 std::cout << "V IS PRESSED\n";
                 break;
             case SDLK_g:
+                addNote(SDLK_g);
                 std::cout << "G IS PRESSED\n";
                 break;
             case SDLK_b:
+                addNote(SDLK_b);
                 std::cout << "B IS PRESSED\n";
                 break;
             case SDLK_n:
+                addNote(SDLK_n);
                 std::cout << "N IS PRESSED\n";
                 break;
             case SDLK_j:
+                addNote(SDLK_j);
                 std::cout << "J IS PRESSED\n";
                 break;
             case SDLK_m:
+                addNote(SDLK_m);
                 std::cout << "M IS PRESSED\n";
                 break;
             case SDLK_k:
+                addNote(SDLK_k);
                 std::cout << "K IS PRESSED\n";
                 break;
             case SDLK_COMMA:
+                addNote(SDLK_COMMA);
                 std::cout << ", IS PRESSED\n";
                 break;
             case SDLK_l:
+                addNote(SDLK_l);
                 std::cout << "L IS PRESSED\n";
                 break;
             case SDLK_PERIOD:
+                addNote(SDLK_PERIOD);
                 std::cout << ". IS PRESSED\n";
                 break;
             case SDLK_SLASH:
+                addNote(SDLK_SLASH);
                 std::cout << "/ IS PRESSED\n";
                 break;
             }
@@ -218,6 +234,72 @@ void APPLICATION<T>::handleEvents()
             break;
         }
     }
+}
+
+template <class T>
+int APPLICATION<T>::keyCodeToKeyID(SDL_KeyCode key)
+{
+    int id;
+    switch (key)
+    {
+    case SDLK_z:
+        id = 0;
+        break;
+    case SDLK_s:
+        id = 1;
+        break;
+    case SDLK_x:
+        id = 2;
+        break;
+    case SDLK_c:
+        id = 3;
+        break;
+    case SDLK_f:
+        id = 4;
+        break;
+    case SDLK_v:
+        id = 5;
+        break;
+    case SDLK_g:
+        id = 6;
+        break;
+    case SDLK_b:
+        id = 7;
+        break;
+    case SDLK_n:
+        id = 8;
+        break;
+    case SDLK_j:
+        id = 9;
+        break;
+    case SDLK_m:
+        id = 10;
+        break;
+    case SDLK_k:
+        id = 12;
+        break;
+    case SDLK_COMMA:
+        id = 13;
+        break;
+    case SDLK_l:
+        id = 14;
+        break;
+    case SDLK_PERIOD:
+        id = 15;
+        break;
+    case SDLK_SLASH:
+        id = 16;
+        break;
+    }
+
+    return 64 + id;
+}
+
+template <class T>
+void APPLICATION<T>::addNote(SDL_KeyCode key)
+{
+    note<T> newNote(keyCodeToKeyID(key), synthData.ticks, 0, true, currentInstrument);
+    synthData.notes.emplace_back(newNote);
 }
 
 template <class T>

@@ -59,9 +59,39 @@ T instrument_base<T>::oscSine(const T time, const T frequency, const T lowfreq, 
 }
 
 template <class T>
+T instrument_base<T>::oscSquare(const T time, const T frequency, const T lowfreq, const T lowamp)
+{
+    T freq = hz_to_rad(frequency) * time + lowamp * frequency * (std::sin(hz_to_rad(lowfreq) * time));
+    return std::sin(freq) > 0 ? 1.0 : -1.0;
+}
+
+template <class T>
+T instrument_base<T>::oscTriangle(const T time, const T frequency, const T lowfreq, const T lowamp)
+{
+    T freq = hz_to_rad(frequency) * time + lowamp * frequency * (std::sin(hz_to_rad(lowfreq) * time));
+    return std::asin(std::sin(freq)) * (2 / pi);
+}
+
+template <class T>
+T instrument_base<T>::oscSaw(const T time, const T frequency, const T lowfreq, const T lowamp, const T steps)
+{
+    T freq = hz_to_rad(frequency) * time + lowamp * frequency * (std::sin(hz_to_rad(lowfreq) * time));
+    T output = 0;
+    for (T n = 1; n < steps; n++)
+        output += (std::sin(n * freq)) / n;
+    return output * (2 / pi);
+}
+
+template <class T>
 T instrument_base<T>::oscRand()
 {
     return 2.0 * ((T)rand() / (T)RAND_MAX) - 1.0;
+}
+
+template <class T>
+T instrument_base<T>::scale(const int noteID)
+{
+    return 8 * std::pow(1.0594630943592952645618252949463, noteID);
 }
 
 template class instrument_base<short>;

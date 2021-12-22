@@ -1,15 +1,17 @@
 #pragma once
 #include <note.h>
-#include <map>
 #include <mutex>
 #include <vector>
 
 template <class T>
 class APPLICATION
 {
+    const Uint16 samples = 1024;
+    const Uint8 channels = 2;
+
     struct synthDataStruct
     {
-        T frequency = 48000;
+        T frequency;
         T ticks;
         std::vector<note<T>> notes;
     };
@@ -17,13 +19,10 @@ class APPLICATION
     static std::mutex synthDataMutex;
     inline static synthDataStruct synthData;
 
-    std::map<SDL_Keycode, bool> pressedKeys;
+    instrument_base<T> *currentInstrument = new instrument_bell<T>;
 
     bool initialised = false;
     bool running = true;
-
-    const Uint16 samples = 1024;
-    const Uint8 channels = 2;
 
     SDL_Renderer *renderer = nullptr;
     SDL_Window *window = nullptr;
@@ -32,6 +31,10 @@ class APPLICATION
 
     void initialise();
     void handleEvents();
+    void addNote(SDL_KeyCode key);
+    int keyCodeToKeyID(SDL_KeyCode keyCode);
+    void removeNote();
+    void changeInstrument();
 
 public:
     APPLICATION(const int width, const int height);
