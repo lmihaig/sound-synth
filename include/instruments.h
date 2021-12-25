@@ -6,7 +6,7 @@
 template <class T>
 class note;
 
-template <typename T>
+template <class T>
 class instrument_base;
 
 template <class T>
@@ -15,6 +15,8 @@ std::ostream &operator<<(std::ostream &os, const instrument_base<T> &n);
 template <class T>
 class instrument_base
 {
+
+protected:
     static constexpr float pi = 3.1415926535;
     T volume;
     T maxLifeTime;
@@ -36,29 +38,37 @@ public:
     bool operator==(const instrument_base<T> &rhs) const;
     bool operator!=(const instrument_base<T> &rhs) const;
     instrument_base<T> &operator=(const instrument_base<T> &copy);
-    friend std::ostream &operator<<(std::ostream &os, const instrument_base<T> &inst);
+    friend std::ostream &operator<<<>(std::ostream &os, const instrument_base<T> &inst);
 };
 
 template <class T>
 class instrument_bell : public instrument_base<T>
 {
-    T sound(const T time, note<T> &n, bool &noteFinished)
+    T sound(const T time, note<T> &n, bool &noteFinished) override
     {
         T amp = env.amplitude(time, n.on, n.off);
         if (amp <= 0.0)
             noteFinished = true;
 
         T sound = 1.00 * oscSine(time - n.on, scale(n.id + 12), 5.0, 0.001) + 0.50 * oscSine(time - n.on, scale(n.id + 24)) + 0.25 * oscSine(time - n.on, scale(n.id + 36));
+
+        std::cout << "TEST";
+        return sound * volume * amp;
     };
 
 public:
-    instrument_bell() : instrument_base(1.0, 3.0, envelopeADSR(0.01, 1.0, 0.0, 1.0), "Bell"){};
+    instrument_bell() : instrument_base(1.0, 3.0, envelopeADSR<T>(1.0, 0.01, 1.0, 0.0, 1.0), "Bell"){};
 };
 
 template <class T>
 class instrument_harmonica : public instrument_base<T>
 {
-    T sound(const T time, note<T> &n, bool &noteFinished);
+    T sound(const T time, note<T> &n, bool &noteFinished) override{
+
+    };
+
+public:
+    instrument_harmonica() : instrument_base(1, -1.0, envelopeADSR<T>(1, 0, 1.0, 0.95, 0.1), "Harmonica"){};
 };
 
 template <class T>

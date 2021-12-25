@@ -16,10 +16,8 @@ https://github.com/libsdl-org/SDL
     -functionalitati: adaugat note in vectorul de note, scos notele din acesta, schimbat instrument, testat daca chiar scoate sunet
 
     -smart pointeri undeva
-    -constructori
     -modificat mai multe in const
 
-    -problemele de mostenire
     -exceptii
 
     -design patterns

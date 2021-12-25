@@ -103,67 +103,51 @@ void APPLICATION<T>::handleEvents()
                 //     break;
             case SDLK_z:
                 addNote(SDLK_z);
-                std::cout << "Z IS PRESSED\n";
                 break;
             case SDLK_s:
                 addNote(SDLK_s);
-                std::cout << "S IS PRESSED\n";
                 break;
             case SDLK_x:
                 addNote(SDLK_x);
-                std::cout << "X IS PRESSED\n";
                 break;
             case SDLK_c:
                 addNote(SDLK_c);
-                std::cout << "C IS PRESSED\n";
                 break;
             case SDLK_f:
                 addNote(SDLK_f);
-                std::cout << "F IS PRESSED\n";
                 break;
             case SDLK_v:
                 addNote(SDLK_v);
-                std::cout << "V IS PRESSED\n";
                 break;
             case SDLK_g:
                 addNote(SDLK_g);
-                std::cout << "G IS PRESSED\n";
                 break;
             case SDLK_b:
                 addNote(SDLK_b);
-                std::cout << "B IS PRESSED\n";
                 break;
             case SDLK_n:
                 addNote(SDLK_n);
-                std::cout << "N IS PRESSED\n";
                 break;
             case SDLK_j:
                 addNote(SDLK_j);
-                std::cout << "J IS PRESSED\n";
                 break;
             case SDLK_m:
                 addNote(SDLK_m);
-                std::cout << "M IS PRESSED\n";
                 break;
             case SDLK_k:
                 addNote(SDLK_k);
-                std::cout << "K IS PRESSED\n";
                 break;
             case SDLK_COMMA:
                 addNote(SDLK_COMMA);
-                std::cout << ", IS PRESSED\n";
                 break;
             case SDLK_l:
                 addNote(SDLK_l);
-                std::cout << "L IS PRESSED\n";
                 break;
             case SDLK_PERIOD:
                 addNote(SDLK_PERIOD);
-                std::cout << ". IS PRESSED\n";
                 break;
             case SDLK_SLASH:
                 addNote(SDLK_SLASH);
-                std::cout << "/ IS PRESSED\n";
                 break;
             }
             break;
@@ -299,6 +283,7 @@ template <class T>
 void APPLICATION<T>::addNote(SDL_KeyCode key)
 {
     note<T> newNote(keyCodeToKeyID(key), synthData.ticks, 0, true, currentInstrument);
+    std::cout << newNote;
     synthData.notes.emplace_back(newNote);
 }
 
@@ -334,7 +319,5 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
     curSynthData->ticks = curSynthData->ticks + secondPerTick;
 }
 
-template class APPLICATION<short>;
-template class APPLICATION<int>;
 template class APPLICATION<float>;
 template class APPLICATION<double>;

@@ -42,6 +42,7 @@ instrument_base<T>::instrument_base(const T volume, const T maxLifeTime, envelop
 template <class T>
 T instrument_base<T>::sound(const T time, note<T> &n, bool &noteFinished)
 {
+    std::cout << "TEST";
     return 0;
 }
 
@@ -94,7 +95,8 @@ T instrument_base<T>::scale(const int noteID)
     return 8 * std::pow(1.0594630943592952645618252949463, noteID);
 }
 
-template class instrument_base<short>;
-template class instrument_base<int>;
 template class instrument_base<float>;
 template class instrument_base<double>;
+
+template std::ostream &operator<<<>(std::ostream &o, const instrument_base<float> &n);
+template std::ostream &operator<<<>(std::ostream &o, const instrument_base<double> &n);

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     constexpr int HEIGHT = 1080 * 0.5;
 
     // Type determines the quality of the audio short < int < float < double
-    APPLICATION<float> app(WIDTH, HEIGHT);
+    APPLICATION<double> app(WIDTH, HEIGHT);
     app.run();
     return 0;
 }

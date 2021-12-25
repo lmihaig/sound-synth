@@ -78,7 +78,5 @@ T envelopeADSR<T>::amplitude(const T currentTime, const T noteOnTime, const T no
     return amplitude;
 }
 
-template class envelopeADSR<short>;
-template class envelopeADSR<int>;
 template class envelopeADSR<float>;
 template class envelopeADSR<double>;
