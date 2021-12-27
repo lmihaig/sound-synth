@@ -44,6 +44,7 @@ public:
 template <class T>
 class instrument_bell : public instrument_base<T>
 {
+public:
     T sound(const T time, note<T> &n, bool &noteFinished) override
     {
         T amp = env.amplitude(time, n.on, n.off);
@@ -52,11 +53,9 @@ class instrument_bell : public instrument_base<T>
 
         T sound = 1.00 * oscSine(time - n.on, scale(n.id + 12), 5.0, 0.001) + 0.50 * oscSine(time - n.on, scale(n.id + 24)) + 0.25 * oscSine(time - n.on, scale(n.id + 36));
 
-        std::cout << "TEST";
         return sound * volume * amp;
     };
 
-public:
     instrument_bell() : instrument_base(1.0, 3.0, envelopeADSR<T>(1.0, 0.01, 1.0, 0.0, 1.0), "Bell"){};
 };
 

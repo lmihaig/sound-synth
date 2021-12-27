@@ -14,13 +14,11 @@ class APPLICATION
         T frequency;
         T ticks;
         std::vector<note<T>> notes;
+        instrument_bell<T> currentInstrument;
     };
 
     static std::mutex synthDataMutex;
     inline static synthDataStruct synthData;
-
-    // instrument_base<T> *currentInstrument = new instrument_bell<T>();
-    instrument_bell<T> currentInstrument;
 
     bool initialised = false;
     bool running = true;

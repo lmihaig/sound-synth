@@ -282,7 +282,7 @@ int APPLICATION<T>::keyCodeToKeyID(SDL_KeyCode key)
 template <class T>
 void APPLICATION<T>::addNote(SDL_KeyCode key)
 {
-    note<T> newNote(keyCodeToKeyID(key), synthData.ticks, 0, true, currentInstrument);
+    note<T> newNote(keyCodeToKeyID(key), synthData.ticks, 0, true);
     std::cout << newNote;
     synthData.notes.emplace_back(newNote);
 }
@@ -308,7 +308,7 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
             // T sound = 0;
             // if (n.timbre != nullptr)
             //     sound = n.timbre.sound(curSynthData->ticks, n, noteFinished);
-            mixedOutput += n.timbre.sound(curSynthData->ticks, n, noteFinished);
+            mixedOutput += curSynthData->currentInstrument.sound(curSynthData->ticks, n, noteFinished);
             if (noteFinished)
                 n.active = false;
         }
