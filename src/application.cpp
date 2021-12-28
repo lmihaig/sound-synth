@@ -4,6 +4,17 @@ template <class T>
 std::mutex APPLICATION<T>::synthDataMutex;
 
 template <class T>
+APPLICATION<T> *APPLICATION<T>::app = nullptr;
+
+template <class T>
+APPLICATION<T> &APPLICATION<T>::instance(const int width, const int height)
+{
+    if (app == nullptr)
+        app = new APPLICATION(width, height);
+    return *app;
+}
+
+template <class T>
 APPLICATION<T>::APPLICATION(const int width, const int height)
 {
     initialise();
@@ -283,8 +294,17 @@ template <class T>
 void APPLICATION<T>::addNote(SDL_KeyCode key)
 {
     note<T> newNote(keyCodeToKeyID(key), synthData.ticks, 0, true);
-    std::cout << newNote;
+    std::cout << newNote << " was played on " << synthData.currentInstrument;
     synthData.notes.emplace_back(newNote);
+}
+
+template <class T>
+T APPLICATION<T>::clip(T sample)
+{
+    if (sample >= 0.0)
+        return fmin(sample, 1.0);
+    else
+        return fmax(sample, 1.0);
 }
 
 template <class T>
@@ -305,14 +325,12 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
         for (auto &n : curSynthData->notes)
         {
             bool noteFinished = false;
-            // T sound = 0;
-            // if (n.timbre != nullptr)
-            //     sound = n.timbre.sound(curSynthData->ticks, n, noteFinished);
             mixedOutput += curSynthData->currentInstrument.sound(curSynthData->ticks, n, noteFinished);
             if (noteFinished)
                 n.active = false;
         }
-
+        // std::cout << mixedOutput << "\n";
+        mixedOutput = clip(mixedOutput);
         buffer[i] = mixedOutput;
         buffer[i + 1] = mixedOutput;
     }

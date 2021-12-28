@@ -62,11 +62,12 @@ public:
 template <class T>
 class instrument_harmonica : public instrument_base<T>
 {
-    T sound(const T time, note<T> &n, bool &noteFinished) override{
-
+public:
+    T sound(const T time, note<T> &n, bool &noteFinished) override
+    {
+        return 0;
     };
 
-public:
     instrument_harmonica() : instrument_base(1, -1.0, envelopeADSR<T>(1, 0, 1.0, 0.95, 0.1), "Harmonica"){};
 };
 
