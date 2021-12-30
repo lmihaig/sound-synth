@@ -322,9 +322,9 @@ template <class T>
 T APPLICATION<T>::clip(T sample)
 {
     if (sample >= 0.0)
-        return fmin(sample, 1.0);
+        return std::fmin(sample, 1.0);
     else
-        return fmax(sample, 1.0);
+        return std::fmax(sample, 1.0);
 }
 
 template <class T>

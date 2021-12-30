@@ -67,7 +67,7 @@ public:
         return 0;
     };
 
-    instrument_harmonica() : instrument_base(1, -1.0, envelopeADSR<T>(1, 0, 1.0, 0.95, 0.1), "Harmonica"){};
+    instrument_harmonica() : instrument_base<T>(1, -1.0, envelopeADSR<T>(1, 0, 1.0, 0.95, 0.1), "Harmonica"){};
 };
 
 template <class T>
