@@ -40,6 +40,11 @@ instrument_base<T>::instrument_base(const T volume, const T maxLifeTime, envelop
 }
 
 template <class T>
+instrument_base<T>::instrument_base(const instrument_base<T> &copy) : volume{copy.volume}, maxLifeTime{copy.maxLifeTime}, name{copy.name}
+{
+}
+
+template <class T>
 T instrument_base<T>::sound(const T time, note<T> &n, bool &noteFinished)
 {
     return 0;

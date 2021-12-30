@@ -24,7 +24,13 @@ protected:
     std::string name;
 
 public:
+    friend std::ostream &operator<<<>(std::ostream &os, const instrument_base<T> &inst);
     instrument_base(const T volume, const T maxLifeTime, envelopeADSR<T> env, const std::string name);
+    instrument_base(const instrument_base<T> &copy);
+    bool operator==(const instrument_base<T> &rhs) const;
+    bool operator!=(const instrument_base<T> &rhs) const;
+    instrument_base<T> &operator=(const instrument_base<T> &copy);
+
     virtual T sound(const T time, note<T> &n, bool &noteFinished);
     T hz_to_rad(const T hertz);
     T oscSine(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0);
@@ -34,11 +40,6 @@ public:
     T oscRand();
 
     T scale(const int noteID);
-
-    bool operator==(const instrument_base<T> &rhs) const;
-    bool operator!=(const instrument_base<T> &rhs) const;
-    instrument_base<T> &operator=(const instrument_base<T> &copy);
-    friend std::ostream &operator<<<>(std::ostream &os, const instrument_base<T> &inst);
 };
 
 template <class T>

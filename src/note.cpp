@@ -6,6 +6,12 @@ note<T>::note(int id, T on, T off, bool active) : id{id}, on{on}, off{off}, acti
 }
 
 template <class T>
+note<T>::~note()
+{
+    std::cout << "Note " << id << " was destroyed\n";
+}
+
+template <class T>
 std::ostream &operator<<(std::ostream &os, const note<T> &n)
 {
     os << "Note ID: " << n.id;
