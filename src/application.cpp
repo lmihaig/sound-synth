@@ -319,15 +319,6 @@ void APPLICATION<T>::removeNote(SDL_KeyCode key)
 }
 
 template <class T>
-T APPLICATION<T>::clip(T sample)
-{
-    if (sample >= 0.0)
-        return std::fmin(sample, 1.0);
-    else
-        return std::fmax(sample, 1.0);
-}
-
-template <class T>
 void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
 {
 
@@ -349,7 +340,6 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
             if (noteFinished)
                 n.active = false;
         }
-        // mixedOutput = clip(mixedOutput);
         buffer[i] = mixedOutput;
         buffer[i + 1] = mixedOutput;
 

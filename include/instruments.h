@@ -3,6 +3,7 @@
 #include <string>
 #include <envelopeADSR.h>
 
+
 template <class T>
 class note;
 

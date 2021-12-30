@@ -26,18 +26,19 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
         endif()
 endif()
 
-if (MSVC)
-    add_compile_options(/W4 /permissive-)
-else ()
-    add_compile_options(-Wall -Wextra -pedantic -g)
-    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        target_compile_options(-stdlib=libstdc++)
-    endif ()
-endif ()
 
 # Add source files
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_executable(${PROJECT_NAME} main.cpp ${SRC_FILES})
+
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /permissive-)
+else ()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -g)
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libstdc++)
+    endif()
+endif ()
 
 
 # Add external libraries and header files

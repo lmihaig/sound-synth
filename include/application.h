@@ -37,7 +37,6 @@ class APPLICATION
     void removeNote(SDL_KeyCode key);
     void changeInstrument();
     int keyCodeToKeyID(SDL_KeyCode keyCode);
-    static T clip(T sample);
     APPLICATION(const int width, const int height);
 
 public:
