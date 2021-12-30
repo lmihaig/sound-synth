@@ -42,41 +42,40 @@ instrument_base<T>::instrument_base(const T volume, const T maxLifeTime, envelop
 template <class T>
 T instrument_base<T>::sound(const T time, note<T> &n, bool &noteFinished)
 {
-    std::cout << "TEST";
     return 0;
 }
 
 template <class T>
-T instrument_base<T>::hz_to_rad(T hertz)
+T instrument_base<T>::hz_to_rad(const T hertz)
 {
-    return hertz * 2 * pi;
+    return hertz * 2.0 * pi;
 }
 
 template <class T>
 T instrument_base<T>::oscSine(const T time, const T frequency, const T lowfreq, const T lowamp)
 {
-    T freq = hz_to_rad(frequency) * time + lowamp * frequency * (std::sin(hz_to_rad(lowfreq) * time));
+    T freq = hz_to_rad(frequency) * time + lowamp * (std::sin(hz_to_rad(lowfreq) * time));
     return std::sin(freq);
 }
 
 template <class T>
 T instrument_base<T>::oscSquare(const T time, const T frequency, const T lowfreq, const T lowamp)
 {
-    T freq = hz_to_rad(frequency) * time + lowamp * frequency * (std::sin(hz_to_rad(lowfreq) * time));
+    T freq = hz_to_rad(frequency) * time + lowamp * (std::sin(hz_to_rad(lowfreq) * time));
     return std::sin(freq) > 0 ? 1.0 : -1.0;
 }
 
 template <class T>
 T instrument_base<T>::oscTriangle(const T time, const T frequency, const T lowfreq, const T lowamp)
 {
-    T freq = hz_to_rad(frequency) * time + lowamp * frequency * (std::sin(hz_to_rad(lowfreq) * time));
+    T freq = hz_to_rad(frequency) * time + lowamp * (std::sin(hz_to_rad(lowfreq) * time));
     return std::asin(std::sin(freq)) * (2 / pi);
 }
 
 template <class T>
 T instrument_base<T>::oscSaw(const T time, const T frequency, const T lowfreq, const T lowamp, const T steps)
 {
-    T freq = hz_to_rad(frequency) * time + lowamp * frequency * (std::sin(hz_to_rad(lowfreq) * time));
+    T freq = hz_to_rad(frequency) * time + lowamp * (std::sin(hz_to_rad(lowfreq) * time));
     T output = 0;
     for (T n = 1; n < steps; n++)
         output += (std::sin(n * freq)) / n;

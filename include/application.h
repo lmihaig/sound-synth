@@ -2,11 +2,12 @@
 #include <note.h>
 #include <mutex>
 #include <vector>
+#include <algorithm>
 
 template <class T>
 class APPLICATION
 {
-    const Uint16 samples = 1024;
+    const Uint16 samples = 512;
     const Uint8 channels = 2;
 
     struct synthDataStruct
@@ -33,7 +34,7 @@ class APPLICATION
     void initialise();
     void handleEvents();
     void addNote(SDL_KeyCode key);
-    void removeNote();
+    void removeNote(SDL_KeyCode key);
     void changeInstrument();
     int keyCodeToKeyID(SDL_KeyCode keyCode);
     static T clip(T sample);

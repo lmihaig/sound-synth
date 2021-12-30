@@ -168,52 +168,52 @@ void APPLICATION<T>::handleEvents()
             switch (event.key.keysym.sym)
             {
             case SDLK_z:
-                std::cout << "Z IS RELEASED\n";
+                removeNote(SDLK_z);
                 break;
             case SDLK_s:
-                std::cout << "S IS RELEASED\n";
+                removeNote(SDLK_s);
                 break;
             case SDLK_x:
-                std::cout << "X IS RELEASED\n";
+                removeNote(SDLK_x);
                 break;
             case SDLK_c:
-                std::cout << "C IS RELEASED\n";
+                removeNote(SDLK_c);
                 break;
             case SDLK_f:
-                std::cout << "F IS RELEASED\n";
+                removeNote(SDLK_f);
                 break;
             case SDLK_v:
-                std::cout << "V IS RELEASED\n";
+                removeNote(SDLK_v);
                 break;
             case SDLK_g:
-                std::cout << "G IS RELEASED\n";
+                removeNote(SDLK_g);
                 break;
             case SDLK_b:
-                std::cout << "B IS RELEASED\n";
+                removeNote(SDLK_b);
                 break;
             case SDLK_n:
-                std::cout << "N IS RELEASED\n";
+                removeNote(SDLK_n);
                 break;
             case SDLK_j:
-                std::cout << "J IS RELEASED\n";
+                removeNote(SDLK_j);
                 break;
             case SDLK_m:
-                std::cout << "M IS RELEASED\n";
+                removeNote(SDLK_m);
                 break;
             case SDLK_k:
-                std::cout << "K IS RELEASED\n";
+                removeNote(SDLK_k);
                 break;
             case SDLK_COMMA:
-                std::cout << ", IS RELEASED\n";
+                removeNote(SDLK_COMMA);
                 break;
             case SDLK_l:
-                std::cout << "L IS RELEASED\n";
+                removeNote(SDLK_l);
                 break;
             case SDLK_PERIOD:
-                std::cout << ". IS RELEASED\n";
+                removeNote(SDLK_PERIOD);
                 break;
             case SDLK_SLASH:
-                std::cout << "/ IS RELEASED\n";
+                removeNote(SDLK_SLASH);
                 break;
             }
             break;
@@ -293,9 +293,29 @@ int APPLICATION<T>::keyCodeToKeyID(SDL_KeyCode key)
 template <class T>
 void APPLICATION<T>::addNote(SDL_KeyCode key)
 {
-    note<T> newNote(keyCodeToKeyID(key), synthData.ticks, 0, true);
-    std::cout << newNote << " was played on " << synthData.currentInstrument;
-    synthData.notes.emplace_back(newNote);
+    int keyID = keyCodeToKeyID(key);
+    auto noteFound = std::find_if(synthData.notes.begin(), synthData.notes.end(), [&keyID](const note<T> &item)
+                                  { return item.id == keyID; });
+    if (noteFound == synthData.notes.end())
+    {
+        note<T> newNote(keyID, synthData.ticks, 0, true);
+        std::cout << newNote << " was played on " << synthData.currentInstrument;
+        synthData.notes.emplace_back(newNote);
+    }
+    else
+    {
+        noteFound->on = synthData.ticks;
+        noteFound->active = true;
+    }
+}
+
+template <class T>
+void APPLICATION<T>::removeNote(SDL_KeyCode key)
+{
+    int keyID = keyCodeToKeyID(key);
+    auto noteFound = std::find_if(synthData.notes.begin(), synthData.notes.end(), [&keyID](const note<T> &item)
+                                  { return item.id == keyID; });
+    noteFound->off = synthData.ticks;
 }
 
 template <class T>
@@ -319,7 +339,7 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
     SDL_memset(stream, 0, len);
     T *buffer = reinterpret_cast<T *>(stream);
 
-    for (int i = 0; i < len / sizePerSample; i++)
+    for (int i = 0; i < len / sizePerSample; i += 2)
     {
         T mixedOutput = 0;
         for (auto &n : curSynthData->notes)
@@ -329,10 +349,19 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
             if (noteFinished)
                 n.active = false;
         }
-        // std::cout << mixedOutput << "\n";
-        mixedOutput = clip(mixedOutput);
+        // mixedOutput = clip(mixedOutput);
         buffer[i] = mixedOutput;
         buffer[i + 1] = mixedOutput;
+
+        // std::erase_if(curSynthData->notes, [](const note<T> &item)
+        //               { return item.active; });
+        curSynthData->notes.erase(std::remove_if(
+                                      curSynthData->notes.begin(), curSynthData->notes.end(),
+                                      [](const note<T> &item)
+                                      {
+                                          return item.active;
+                                      }),
+                                  curSynthData->notes.end());
     }
     curSynthData->ticks = curSynthData->ticks + secondPerTick;
 }

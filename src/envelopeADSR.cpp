@@ -68,12 +68,12 @@ T envelopeADSR<T>::amplitude(const T currentTime, const T noteOnTime, const T no
         if (noteLifetime > (attackTime + decayTime))
             releaseAmplitude = sustainLevel;
 
-        amplitude = ((currentTime - noteOffTime) / releaseTime) * (0.0f - releaseAmplitude) + releaseAmplitude;
+        amplitude = ((currentTime - noteOffTime) / releaseTime) * (0.0 - releaseAmplitude) + releaseAmplitude;
     }
 
     // Amplitude is too low, don't output anything
-    if (amplitude <= 0.001f)
-        amplitude = 0.0f;
+    if (amplitude <= 0.001)
+        amplitude = 0.0;
 
     return amplitude;
 }
