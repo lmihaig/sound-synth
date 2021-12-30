@@ -353,15 +353,8 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
         buffer[i] = mixedOutput;
         buffer[i + 1] = mixedOutput;
 
-        // std::erase_if(curSynthData->notes, [](const note<T> &item)
-        //               { return item.active; });
-        curSynthData->notes.erase(std::remove_if(
-                                      curSynthData->notes.begin(), curSynthData->notes.end(),
-                                      [](const note<T> &item)
-                                      {
-                                          return item.active;
-                                      }),
-                                  curSynthData->notes.end());
+        std::erase_if(curSynthData->notes, [](const note<T> &item)
+                      { return item.active; });
     }
     curSynthData->ticks = curSynthData->ticks + secondPerTick;
 }

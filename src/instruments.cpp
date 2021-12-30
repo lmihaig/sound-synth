@@ -6,7 +6,6 @@ instrument_base<T> &instrument_base<T>::operator=(const instrument_base<T> &copy
 {
     if (this != &copy)
     {
-        this->volume = copy.volume;
         this->maxLifeTime = copy.maxLifeTime;
         this->env = copy.env;
         this->name = copy.name;
@@ -17,7 +16,7 @@ instrument_base<T> &instrument_base<T>::operator=(const instrument_base<T> &copy
 template <class T>
 bool instrument_base<T>::operator==(const instrument_base<T> &rhs) const
 {
-    return volume == rhs.volume && maxLifeTime == rhs.maxLifeTime && env == rhs.env && name == rhs.name;
+    return maxLifeTime == rhs.maxLifeTime && env == rhs.env && name == rhs.name;
 }
 
 template <class T>
@@ -35,12 +34,12 @@ std::ostream &operator<<(std::ostream &os, const instrument_base<T> &inst)
 }
 
 template <class T>
-instrument_base<T>::instrument_base(const T volume, const T maxLifeTime, envelopeADSR<T> env, const std::string name) : volume{volume}, maxLifeTime{maxLifeTime}, name{name}
+instrument_base<T>::instrument_base(const T maxLifeTime, envelopeADSR<T> env, const std::string name) : maxLifeTime{maxLifeTime}, env{env}, name{name}
 {
 }
 
 template <class T>
-instrument_base<T>::instrument_base(const instrument_base<T> &copy) : volume{copy.volume}, maxLifeTime{copy.maxLifeTime}, name{copy.name}
+instrument_base<T>::instrument_base(const instrument_base<T> &copy) : maxLifeTime{copy.maxLifeTime}, name{copy.name}
 {
 }
 
