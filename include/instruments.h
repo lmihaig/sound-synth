@@ -84,7 +84,6 @@ public:
         if (this->maxLifeTime > 0.0 && time - n.on >= this->maxLifeTime)
             noteFinished = true;
         T sound = 1.0 * this->oscSine(time - n.on, this->scale(n.id - 36), 1, 1) + 0.01 * this->oscRand();
-
         return sound * amp;
     };
 

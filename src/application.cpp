@@ -178,7 +178,14 @@ void APPLICATION<T>::addNote(int keyID)
                                   { return item.id == keyID; });
     if (noteFound == synthData.notes.end())
     {
-        synthData.notes.emplace_back(note<T>(keyID, synthData.ticks, 0, true));
+        try
+        {
+            synthData.notes.emplace_back(note<T>(keyID, synthData.ticks, 0, true));
+        }
+        catch (std::runtime_error &error)
+        {
+            std::cout << "In addNote: " << error.what() << "\n";
+        }
     }
     else
     {
@@ -224,8 +231,8 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
             if (noteFinished)
                 n.active = false;
         }
-        // std::cout << mixedOutput << "\n";
 
+        // std::cout << mixedOutput << "\n";
         *buffer++ = mixedOutput;
         *buffer++ = mixedOutput;
         std::erase_if(curSynthData->notes, [](const note<T> &item)

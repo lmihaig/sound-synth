@@ -1,8 +1,13 @@
 #include <note.h>
+#include <exceptions.h>
 
 template <class T>
 note<T>::note(int id, T on, T off, bool active) : id{id}, on{on}, off{off}, active{active}
 {
+    if (on < off)
+        throw error_interval();
+    if (id < 64 || id > 80)
+        throw error_scale(id);
 }
 
 template <class T>
