@@ -72,7 +72,7 @@ T envelopeADSR<T>::amplitude(const T currentTime, const T noteOnTime, const T no
     }
 
     // Amplitude is too low, don't output anything
-    if (amplitude <= 0.001)
+    if (amplitude <= 0.01)
         amplitude = 0.0;
 
     return amplitude;

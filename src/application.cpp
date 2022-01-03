@@ -22,19 +22,19 @@ APPLICATION<T>::APPLICATION(const int width, const int height)
     window = SDL_CreateWindow("sound-synth", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, 0);
 
-    synthData.frequency = 48000;
     synthData.ticks = 0;
+    synthData.secondsPerTick = static_cast<T>(1.0 / frequency);
 
     SDL_AudioSpec desired;
     SDL_AudioSpec obtained;
 
     SDL_zero(desired);
     desired.silence = 0;
-    desired.freq = synthData.frequency;
+    desired.freq = frequency;
     desired.channels = channels;
     desired.samples = samples;
     desired.userdata = &synthData;
-    desired.callback = audioCallback;
+    desired.callback = &audioCallback;
     desired.format = AUDIO_S32SYS;
     audioDevice = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 1);
 
@@ -78,155 +78,26 @@ void APPLICATION<T>::handleEvents()
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
-        switch (event.type)
-        {
-        // Detect which key is pressed down
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.sym)
-            {
-                // Select which instrument to use
-                // case SDLK_1:
-                //     changeInstrument(1);
-                //     break;
-                // case SDLK_2:
-                //     changeInstrument(2);
-                //     break;
-                // case SDLK_3:
-                //     changeInstrument(3);
-                //     break;
-                // case SDLK_4:
-                //     changeInstrument(4);
-                //     break;
-                // case SDLK_5:
-                //     changeInstrument(5);
-                //     break;
-                // case SDLK_6:
-                //     changeInstrument(6);
-                //     break;
-                // case SDLK_7:
-                //     changeInstrument(7);
-                //     break;
-                // case SDLK_8:
-                //     changeInstrument(8);
-                //     break;
-                // case SDLK_9:
-                //     changeInstrument(9);
-                //     break;
-            case SDLK_z:
-                addNote(SDLK_z);
-                break;
-            case SDLK_s:
-                addNote(SDLK_s);
-                break;
-            case SDLK_x:
-                addNote(SDLK_x);
-                break;
-            case SDLK_c:
-                addNote(SDLK_c);
-                break;
-            case SDLK_f:
-                addNote(SDLK_f);
-                break;
-            case SDLK_v:
-                addNote(SDLK_v);
-                break;
-            case SDLK_g:
-                addNote(SDLK_g);
-                break;
-            case SDLK_b:
-                addNote(SDLK_b);
-                break;
-            case SDLK_n:
-                addNote(SDLK_n);
-                break;
-            case SDLK_j:
-                addNote(SDLK_j);
-                break;
-            case SDLK_m:
-                addNote(SDLK_m);
-                break;
-            case SDLK_k:
-                addNote(SDLK_k);
-                break;
-            case SDLK_COMMA:
-                addNote(SDLK_COMMA);
-                break;
-            case SDLK_l:
-                addNote(SDLK_l);
-                break;
-            case SDLK_PERIOD:
-                addNote(SDLK_PERIOD);
-                break;
-            case SDLK_SLASH:
-                addNote(SDLK_SLASH);
-                break;
-            }
-            break;
-
-        // Detect which key has been released
-        case SDL_KEYUP:
-            switch (event.key.keysym.sym)
-            {
-            case SDLK_z:
-                removeNote(SDLK_z);
-                break;
-            case SDLK_s:
-                removeNote(SDLK_s);
-                break;
-            case SDLK_x:
-                removeNote(SDLK_x);
-                break;
-            case SDLK_c:
-                removeNote(SDLK_c);
-                break;
-            case SDLK_f:
-                removeNote(SDLK_f);
-                break;
-            case SDLK_v:
-                removeNote(SDLK_v);
-                break;
-            case SDLK_g:
-                removeNote(SDLK_g);
-                break;
-            case SDLK_b:
-                removeNote(SDLK_b);
-                break;
-            case SDLK_n:
-                removeNote(SDLK_n);
-                break;
-            case SDLK_j:
-                removeNote(SDLK_j);
-                break;
-            case SDLK_m:
-                removeNote(SDLK_m);
-                break;
-            case SDLK_k:
-                removeNote(SDLK_k);
-                break;
-            case SDLK_COMMA:
-                removeNote(SDLK_COMMA);
-                break;
-            case SDLK_l:
-                removeNote(SDLK_l);
-                break;
-            case SDLK_PERIOD:
-                removeNote(SDLK_PERIOD);
-                break;
-            case SDLK_SLASH:
-                removeNote(SDLK_SLASH);
-                break;
-            }
-            break;
-
         // Detect if the user tries to close the window and if so stop running, which will call the destructor
-        case SDL_WINDOWEVENT:
-            switch (event.window.event)
+        if (event.type == SDL_QUIT || event.window.event == SDL_WINDOWEVENT_CLOSE || event.key.keysym.sym == SDLK_ESCAPE)
+        {
+            running = false;
+        }
+        else
+        {
+            for (auto it : keys)
             {
-            case SDL_WINDOWEVENT_CLOSE:
-                running = false;
-                break;
+                if (event.key.keysym.sym == it)
+                {
+                    // Add pressed key
+                    if (event.type == SDL_KEYDOWN)
+                        addNote(it);
+
+                    // Removed released key
+                    else if (event.type == SDL_KEYUP)
+                        removeNote(it);
+                }
             }
-            break;
         }
     }
 }
@@ -234,7 +105,7 @@ void APPLICATION<T>::handleEvents()
 template <class T>
 int APPLICATION<T>::keyCodeToKeyID(SDL_KeyCode key)
 {
-    int id;
+    int id = 0;
     switch (key)
     {
     case SDLK_z:
@@ -312,6 +183,7 @@ void APPLICATION<T>::addNote(SDL_KeyCode key)
 template <class T>
 void APPLICATION<T>::removeNote(SDL_KeyCode key)
 {
+
     int keyID = keyCodeToKeyID(key);
     auto noteFound = std::find_if(synthData.notes.begin(), synthData.notes.end(), [&keyID](const note<T> &item)
                                   { return item.id == keyID; });
@@ -324,13 +196,13 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
 
     std::lock_guard<std::mutex> guard(synthDataMutex);
     synthDataStruct *curSynthData = reinterpret_cast<synthDataStruct *>(userdata);
-    T secondPerTick = 1.0 / static_cast<T>(curSynthData->frequency);
     int sizePerSample = static_cast<int>(sizeof(T));
+    int numToWrite = len / (sizePerSample * 2);
 
     SDL_memset(stream, 0, len);
     T *buffer = reinterpret_cast<T *>(stream);
 
-    for (int i = 0; i < len / sizePerSample; i += 2)
+    for (int sample = 0; sample < numToWrite; sample++)
     {
         T mixedOutput = 0;
         for (auto &n : curSynthData->notes)
@@ -340,13 +212,12 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
             if (noteFinished)
                 n.active = false;
         }
-        buffer[i] = mixedOutput;
-        buffer[i + 1] = mixedOutput;
-
         std::erase_if(curSynthData->notes, [](const note<T> &item)
                       { return item.active; });
+        buffer[sample] = mixedOutput;
+        buffer[sample + 1] = mixedOutput;
     }
-    curSynthData->ticks = curSynthData->ticks + secondPerTick;
+    curSynthData->ticks = curSynthData->ticks + curSynthData->secondsPerTick;
 }
 
 template class APPLICATION<float>;

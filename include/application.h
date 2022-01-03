@@ -7,19 +7,21 @@
 template <class T>
 class APPLICATION
 {
-    const Uint16 samples = 512;
+    const Uint16 frequency = 48000;
+    const Uint16 samples = 96; // frequency / 50  (arbitrary)
     const Uint8 channels = 2;
 
     struct synthDataStruct
     {
-        T frequency;
         T ticks;
+        T secondsPerTick;
         instrument_bell<T> currentInstrument;
         std::vector<note<T>> notes;
     };
 
     static std::mutex synthDataMutex;
     inline static synthDataStruct synthData;
+    inline static const std::vector<SDL_KeyCode> keys = {SDLK_z, SDLK_s, SDLK_x, SDLK_c, SDLK_f, SDLK_v, SDLK_g, SDLK_b, SDLK_n, SDLK_j, SDLK_m, SDLK_k, SDLK_COMMA, SDLK_l, SDLK_PERIOD, SDLK_SLASH};
 
     bool initialised = false;
     bool running = true;

@@ -1,11 +1,8 @@
 #include <application.h>
 
 // Need argc and argv for windows compatibility
-int main(int argc, char *argv[])
+int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 {
-    // Gets rid of useless warnings
-    (void)argc;
-    (void)argv;
 
     constexpr int WIDTH = 1920 * 0.5;
     constexpr int HEIGHT = 1080 * 0.5;
