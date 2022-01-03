@@ -79,7 +79,7 @@ void APPLICATION<T>::handleEvents()
     while (SDL_PollEvent(&event))
     {
         // Detect if the user tries to close the window and if so stop running, which will call the destructor
-        if (event.type == SDL_QUIT || event.window.event == SDL_WINDOWEVENT_CLOSE || event.key.keysym.sym == SDLK_ESCAPE)
+        if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE || event.key.keysym.sym == SDLK_ESCAPE)
         {
             running = false;
         }
@@ -89,13 +89,14 @@ void APPLICATION<T>::handleEvents()
             {
                 if (event.key.keysym.sym == it)
                 {
+                    int keyID = keyCodeToKeyID(it);
                     // Add pressed key
                     if (event.type == SDL_KEYDOWN)
-                        addNote(it);
+                        addNote(keyID);
 
                     // Removed released key
                     else if (event.type == SDL_KEYUP)
-                        removeNote(it);
+                        removeNote(keyID);
                 }
             }
         }
@@ -162,9 +163,8 @@ int APPLICATION<T>::keyCodeToKeyID(SDL_KeyCode key)
 }
 
 template <class T>
-void APPLICATION<T>::addNote(SDL_KeyCode key)
+void APPLICATION<T>::addNote(int keyID)
 {
-    int keyID = keyCodeToKeyID(key);
     auto noteFound = std::find_if(synthData.notes.begin(), synthData.notes.end(), [&keyID](const note<T> &item)
                                   { return item.id == keyID; });
     if (noteFound == synthData.notes.end())
@@ -181,10 +181,8 @@ void APPLICATION<T>::addNote(SDL_KeyCode key)
 }
 
 template <class T>
-void APPLICATION<T>::removeNote(SDL_KeyCode key)
+void APPLICATION<T>::removeNote(int keyID)
 {
-
-    int keyID = keyCodeToKeyID(key);
     auto noteFound = std::find_if(synthData.notes.begin(), synthData.notes.end(), [&keyID](const note<T> &item)
                                   { return item.id == keyID; });
     noteFound->off = synthData.ticks;

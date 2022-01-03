@@ -35,8 +35,8 @@ class APPLICATION
 
     void initialise();
     void handleEvents();
-    void addNote(SDL_KeyCode key);
-    void removeNote(SDL_KeyCode key);
+    void addNote(int keyID);
+    void removeNote(int keyID);
     void changeInstrument();
     int keyCodeToKeyID(SDL_KeyCode keyCode);
     APPLICATION(const int width, const int height);
