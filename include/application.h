@@ -22,7 +22,6 @@ class APPLICATION
     static std::mutex synthDataMutex;
     inline static synthDataStruct synthData;
     inline static const std::vector<SDL_KeyCode> keys = {SDLK_z, SDLK_s, SDLK_x, SDLK_c, SDLK_f, SDLK_v, SDLK_g, SDLK_b, SDLK_n, SDLK_j, SDLK_m, SDLK_k, SDLK_COMMA, SDLK_l, SDLK_PERIOD, SDLK_SLASH};
-
     bool initialised = false;
     bool running = true;
 
@@ -37,7 +36,7 @@ class APPLICATION
     void handleEvents();
     void addNote(int keyID);
     void removeNote(int keyID);
-    void changeInstrument();
+    void changeInstrument(SDL_Keycode instCode);
     int keyCodeToKeyID(SDL_KeyCode keyCode);
     APPLICATION(const int width, const int height);
 

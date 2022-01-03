@@ -1,4 +1,5 @@
 #include <envelopeADSR.h>
+#include <iostream>
 
 template <class T>
 envelopeADSR<T> &envelopeADSR<T>::operator=(const envelopeADSR<T> &copy)
@@ -34,14 +35,13 @@ envelopeADSR<T>::envelopeADSR(T attackLevel, T attackTime, T decayTime, T sustai
 template <class T>
 T envelopeADSR<T>::amplitude(const T currentTime, const T noteOnTime, const T noteOffTime)
 {
-    T amplitude = 0.0f;
-    T releaseAmplitude = 0.0f;
+    T amplitude = 0;
+    T releaseAmplitude = 0;
 
     // ADS Phases -> Note is on
     if (noteOnTime > noteOffTime)
     {
         T noteLifetime = currentTime - noteOnTime;
-
         // Attack Phase
         if (noteLifetime <= attackTime)
             amplitude = (noteLifetime / attackTime) * attackLevel;
@@ -68,11 +68,13 @@ T envelopeADSR<T>::amplitude(const T currentTime, const T noteOnTime, const T no
         if (noteLifetime > (attackTime + decayTime))
             releaseAmplitude = sustainLevel;
 
-        amplitude = ((currentTime - noteOffTime) / releaseTime) * (0.0 - releaseAmplitude) + releaseAmplitude;
+        amplitude = ((currentTime - noteOffTime) / releaseTime) * (0 - releaseAmplitude) + releaseAmplitude;
     }
 
+    // std::cout << currentTime << " " << noteOnTime << " " << noteOffTime << " AMP: " << amplitude << "\n";
+
     // Amplitude is too low, don't output anything
-    if (amplitude <= 0.01)
+    if (amplitude <= 0.001)
         amplitude = 0.0;
 
     return amplitude;

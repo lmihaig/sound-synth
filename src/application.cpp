@@ -83,6 +83,12 @@ void APPLICATION<T>::handleEvents()
         {
             running = false;
         }
+        // If user presses any of 1 - 9 change instrument
+        else if (SDLK_0 <= event.key.keysym.sym && event.key.keysym.sym <= SDLK_9)
+        {
+            if (event.type == SDL_KEYDOWN)
+                changeInstrument(event.key.keysym.sym);
+        }
         else
         {
             for (auto it : keys)
@@ -92,7 +98,10 @@ void APPLICATION<T>::handleEvents()
                     int keyID = keyCodeToKeyID(it);
                     // Add pressed key
                     if (event.type == SDL_KEYDOWN)
+                    {
+                        std::cout << "Note " << keyID << " was played on " << synthData.currentInstrument;
                         addNote(keyID);
+                    }
 
                     // Removed released key
                     else if (event.type == SDL_KEYUP)
@@ -169,9 +178,7 @@ void APPLICATION<T>::addNote(int keyID)
                                   { return item.id == keyID; });
     if (noteFound == synthData.notes.end())
     {
-        note<T> newNote(keyID, synthData.ticks, 0, true);
-        std::cout << newNote << " was played on " << synthData.currentInstrument;
-        synthData.notes.emplace_back(newNote);
+        synthData.notes.emplace_back(note<T>(keyID, synthData.ticks, 0, true));
     }
     else
     {
@@ -189,6 +196,11 @@ void APPLICATION<T>::removeNote(int keyID)
 }
 
 template <class T>
+void APPLICATION<T>::changeInstrument(SDL_Keycode instCode)
+{
+}
+
+template <class T>
 void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
 {
 
@@ -202,6 +214,8 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
 
     for (int sample = 0; sample < numToWrite; sample++)
     {
+        curSynthData->ticks += curSynthData->secondsPerTick;
+
         T mixedOutput = 0;
         for (auto &n : curSynthData->notes)
         {
@@ -210,12 +224,12 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
             if (noteFinished)
                 n.active = false;
         }
-        std::erase_if(curSynthData->notes, [](const note<T> &item)
-                      { return item.active; });
+
         buffer[sample] = mixedOutput;
         buffer[sample + 1] = mixedOutput;
+        std::erase_if(curSynthData->notes, [](const note<T> &item)
+                      { return item.active == false; });
     }
-    curSynthData->ticks = curSynthData->ticks + curSynthData->secondsPerTick;
 }
 
 template class APPLICATION<float>;

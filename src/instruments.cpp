@@ -44,12 +44,6 @@ instrument_base<T>::instrument_base(const instrument_base<T> &copy) : maxLifeTim
 }
 
 template <class T>
-T instrument_base<T>::sound(const T time, note<T> &n, bool &noteFinished)
-{
-    return 0;
-}
-
-template <class T>
 T instrument_base<T>::hz_to_rad(const T hertz)
 {
     return hertz * 2.0 * pi;

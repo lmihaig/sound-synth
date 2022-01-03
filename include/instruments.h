@@ -16,7 +16,7 @@ template <class T>
 class instrument_base
 {
 protected:
-    static constexpr float pi = 3.1415926535;
+    static constexpr double pi = 3.14159265358979323846;
     T maxLifeTime;
     envelopeADSR<T> env;
     std::string name;
@@ -29,7 +29,7 @@ public:
     bool operator!=(const instrument_base<T> &rhs) const;
     instrument_base<T> &operator=(const instrument_base<T> &copy);
 
-    virtual T sound(const T time, note<T> &n, bool &noteFinished);
+    virtual T sound(const T time, note<T> &n, bool &noteFinished) = 0;
     T hz_to_rad(const T hertz);
     T oscSine(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0);
     T oscSquare(const T time, const T frequency, const T lowfreq = 0, const T lowamp = 0);
@@ -47,6 +47,7 @@ public:
     T sound(const T time, note<T> &n, bool &noteFinished) override
     {
         T amp = this->env.amplitude(time, n.on, n.off);
+
         if (amp <= 0.0)
             noteFinished = true;
 
@@ -55,7 +56,7 @@ public:
         return sound * amp;
     };
 
-    instrument_bell() : instrument_base<T>(3.0, envelopeADSR<T>(1.0, 0.01, 1.0, 0.0, 1.0), "Bell"){};
+    instrument_bell() : instrument_base<T>(3, envelopeADSR<T>(1.0, 0.01, 1.0, 0.0, 1.0), "Bell"){};
 };
 
 template <class T>
@@ -67,7 +68,7 @@ public:
         return 0;
     };
 
-    instrument_harmonica() : instrument_base<T>(1, -1.0, envelopeADSR<T>(1, 0, 1.0, 0.95, 0.1), "Harmonica"){};
+    instrument_harmonica() : instrument_base<T>(1, envelopeADSR<T>(1, 0, 1.0, 0.95, 0.1), "Harmonica"){};
 };
 
 template <class T>
