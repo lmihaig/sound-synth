@@ -7,9 +7,9 @@
 template <class T>
 class APPLICATION
 {
-    const unsigned int frequency = 48000;
-    const unsigned int samples = 4096;
-    const unsigned int channels = 2;
+    const Uint16 frequency = 48000;
+    const Uint16 samples = 4096;
+    const Uint8 channels = 2;
 
     struct synthDataStruct
     {

@@ -53,7 +53,7 @@ APPLICATION<T>::~APPLICATION()
 template <class T>
 void APPLICATION<T>::initialise()
 {
-    int result = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS);
 
     initialised = true;
 }
@@ -205,6 +205,7 @@ void APPLICATION<T>::removeNote(int keyID)
 template <class T>
 void APPLICATION<T>::changeInstrument(SDL_Keycode instCode)
 {
+    instCode = instCode;
 }
 
 template <class T>
