@@ -10,12 +10,18 @@ portable cross-platform middleware
 
 https://github.com/libsdl-org/SDL
 
+Keyboard: 
 
+    |   | A#|   |   | C#| | D#|   |   | F#| | G#| | A#|   |     |
+    |   | s |   |   | f | | g |   |   | j | | k | | L |   |     |
+    |   |___|   |   |___| |___|   |   |___| |___| |___|   |     |
+    |  A  |  B  |  C  |  D  |  E  |  F  |  G  |  A  |  B  |  C  |
+    |  z  |  x  |  c  |  v  |  b  |  n  |  m  |  ,  |  .  |  /  |
+    |_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|
 
-    TODO:
-    -reparat sunete
-    -smart pointeri undeva
-    -modificat mai multe in const
+    ESC = Quit
+
+TODO:
 
     -exceptii
 

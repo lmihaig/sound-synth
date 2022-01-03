@@ -25,18 +25,18 @@ APPLICATION<T>::APPLICATION(const int width, const int height)
     synthData.ticks = 0;
     synthData.secondsPerTick = static_cast<T>(1.0 / frequency);
 
-    SDL_AudioSpec desired;
-    SDL_AudioSpec obtained;
+    SDL_AudioSpec desired = {};
+    SDL_AudioSpec obtained = {};
 
     SDL_zero(desired);
-    desired.silence = 0;
     desired.freq = frequency;
     desired.channels = channels;
     desired.samples = samples;
     desired.userdata = &synthData;
-    desired.callback = &audioCallback;
+    desired.callback = audioCallback;
     desired.format = AUDIO_S32SYS;
-    audioDevice = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 1);
+
+    audioDevice = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained, 0);
 
     // Default state is paused, this unpauses it
     SDL_PauseAudioDevice(audioDevice, 0);
@@ -224,9 +224,10 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
             if (noteFinished)
                 n.active = false;
         }
+        // std::cout << mixedOutput << "\n";
 
-        buffer[sample] = mixedOutput;
-        buffer[sample + 1] = mixedOutput;
+        *buffer++ = mixedOutput;
+        *buffer++ = mixedOutput;
         std::erase_if(curSynthData->notes, [](const note<T> &item)
                       { return item.active == false; });
     }

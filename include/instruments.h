@@ -16,7 +16,7 @@ template <class T>
 class instrument_base
 {
 protected:
-    static constexpr double pi = 3.14159265358979323846;
+    static constexpr double pi = 3.1415926535;
     T maxLifeTime;
     envelopeADSR<T> env;
     std::string name;
@@ -47,10 +47,8 @@ public:
     T sound(const T time, note<T> &n, bool &noteFinished) override
     {
         T amp = this->env.amplitude(time, n.on, n.off);
-
         if (amp <= 0.0)
             noteFinished = true;
-
         T sound = 1.00 * this->oscSine(time - n.on, this->scale(n.id + 12), 5.0, 0.001) + 0.50 * this->oscSine(time - n.on, this->scale(n.id + 24)) + 0.25 * this->oscSine(time - n.on, this->scale(n.id + 36));
 
         return sound * amp;
@@ -65,50 +63,88 @@ class instrument_harmonica : public instrument_base<T>
 public:
     T sound(const T time, note<T> &n, bool &noteFinished) override
     {
-        return 0;
+        T amp = this->env.amplitude(time, n.on, n.off);
+        if (amp <= 0.0)
+            noteFinished = true;
+        T sound = 1.0 * this->oscSaw(time - n.on, this->scale(n.id - 12), 5.0, 0.001, 100) + 1.0 * this->oscSquare(time - n.off, this->scale(n.id), 5.0, 0.001) + 0.5 * this->oscSquare(time - n.on, this->scale(n.id + 12)) + 0.05 * this->oscRand();
+
+        return sound * amp;
     };
 
-    instrument_harmonica() : instrument_base<T>(1, envelopeADSR<T>(1, 0, 1.0, 0.95, 0.1), "Harmonica"){};
-};
-
-template <class T>
-class instrument_piano : public instrument_base<T>
-{
-    T sound(const T time, note<T> &n, bool &noteFinished);
-};
-
-template <class T>
-class instrument_guitar : public instrument_base<T>
-{
-    T sound(const T time, note<T> &n, bool &noteFinished);
-};
-
-template <class T>
-class instrument_harp : public instrument_base<T>
-{
-    T sound(const T time, note<T> &n, bool &noteFinished);
-};
-
-template <class T>
-class instrument_flute : public instrument_base<T>
-{
-    T sound(const T time, note<T> &n, bool &noteFinished);
+    instrument_harmonica() : instrument_base<T>(-1, envelopeADSR<T>(1.0, 0, 1.0, 0.95, 0.1), "Harmonica"){};
 };
 
 template <class T>
 class instrument_drum_kick : public instrument_base<T>
 {
-    T sound(const T time, note<T> &n, bool &noteFinished);
+public:
+    T sound(const T time, note<T> &n, bool &noteFinished) override
+    {
+        T amp = this->env.amplitude(time, n.on, n.off);
+        if (this->maxLifeTime > 0.0 && time - n.on >= this->maxLifeTime)
+            noteFinished = true;
+        T sound = 1.0 * this->oscSine(time - n.on, this->scale(n.id - 36), 1, 1) + 0.01 * this->oscRand();
+
+        return sound * amp;
+    };
+
+    instrument_drum_kick() : instrument_base<T>(1.5, envelopeADSR<T>(1.0, 0.01, 0.15, 0, 0), "Drumkick"){};
 };
 
 template <class T>
 class instrument_drum_snare : public instrument_base<T>
 {
-    T sound(const T time, note<T> &n, bool &noteFinished);
+public:
+    T sound(const T time, note<T> &n, bool &noteFinished) override
+    {
+        T amp = this->env.amplitude(time, n.on, n.off);
+        if (this->maxLifeTime > 0.0 && time - n.on >= this->maxLifeTime)
+            noteFinished = true;
+        T sound = 0.5 * this->oscSine(time - n.on, this->scale(n.id - 24), 0.5, 1) + 0.5 * this->oscRand();
+
+        return sound * amp;
+    };
+
+    instrument_drum_snare() : instrument_base<T>(1, envelopeADSR<T>(1.0, 0, 0.2, 0, 0), "Snare"){};
 };
 
 template <class T>
 class instrument_drum_hihat : public instrument_base<T>
 {
-    T sound(const T time, note<T> &n, bool &noteFinished);
+public:
+    T sound(const T time, note<T> &n, bool &noteFinished) override
+    {
+        T amp = this->env.amplitude(time, n.on, n.off);
+        if (this->maxLifeTime > 0.0 && time - n.on >= this->maxLifeTime)
+            noteFinished = true;
+        T sound = 0.1 * this->oscSquare(time - n.on, this->scale(n.id - 12), 1.5, 1) + 0.9 * this->oscRand();
+
+        return sound * amp;
+    };
+
+    instrument_drum_hihat() : instrument_base<T>(1, envelopeADSR<T>(1.0, 0.01, 0.05, 0, 0), "Hihat"){};
 };
+
+// template <class T>
+// class instrument_piano : public instrument_base<T>
+// {
+//     T sound(const T time, note<T> &n, bool &noteFinished);
+// };
+
+// template <class T>
+// class instrument_guitar : public instrument_base<T>
+// {
+//     T sound(const T time, note<T> &n, bool &noteFinished);
+// };
+
+// template <class T>
+// class instrument_harp : public instrument_base<T>
+// {
+//     T sound(const T time, note<T> &n, bool &noteFinished);
+// };
+
+// template <class T>
+// class instrument_flute : public instrument_base<T>
+// {
+//     T sound(const T time, note<T> &n, bool &noteFinished);
+// };

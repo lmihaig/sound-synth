@@ -7,15 +7,15 @@
 template <class T>
 class APPLICATION
 {
-    const Uint16 frequency = 48000;
-    const Uint16 samples = 96; // frequency / 50  (arbitrary)
-    const Uint8 channels = 2;
+    const unsigned int frequency = 48000;
+    const unsigned int samples = 4096;
+    const unsigned int channels = 2;
 
     struct synthDataStruct
     {
         T ticks;
         T secondsPerTick;
-        instrument_bell<T> currentInstrument;
+        instrument_harmonica<T> currentInstrument;
         std::vector<note<T>> notes;
     };
 
