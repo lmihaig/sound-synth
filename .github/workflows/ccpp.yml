@@ -1,0 +1,42 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: dependencies
+      run:
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test && sudo apt update && sudo apt install -y valgrind cppcheck g++-11 gcovr
+    - name: make
+      run: g++-11 *.cpp -o main -std=c++2a -Wall -Wextra -pedantic -Weffc++
+                --coverage -fprofile-arcs -ftest-coverage -g -O0 -lm
+    - name: cppcheck
+      run:
+        cppcheck --enable=all .
+    - name: valgrind
+      run:
+        valgrind --leak-check=full --show-leak-kinds=all
+                 --track-origins=yes --error-exitcode=1 ./main
+    - name: coverage
+      run: |
+        gcov *.cpp
+        mkdir cov/
+        gcovr -r . --html --html-details -o cov/coverage.html --print-summary
+        mv -v cov/  public/
+        mkdir public/.circleci
+        cp .circleci/config.yml public/.circleci/config.yml
+    - name: deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        enable_jekyll: true
