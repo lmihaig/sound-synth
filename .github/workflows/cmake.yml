@@ -1,7 +1,8 @@
-name: C++ CMake CI
+name: C++ CI
 
 on:
   push:
+    branches: [master]
     tags: '*'
 
 jobs:
@@ -32,7 +33,6 @@ jobs:
           echo $GITHUB_WORKSPACE
           mkdir -p $GITHUB_WORKSPACE/build
           mkdir $GITHUB_WORKSPACE/artifacts
-
       - name: Install toolchain (Linux)
         if: runner.os == 'Linux' && matrix.cxx == 'g++-11'
         shell: bash
@@ -67,17 +67,18 @@ jobs:
         with:
           url: "https://github.com/brechtsanders/winlibs_mingw/releases/download/11.2.0-13.0.0-9.0.0-ucrt-r2/winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64ucrt-9.0.0-r2.zip"
           target: compiler
-
       - name: Install toolchain (Windows g++)
         if: runner.os == 'Windows' && matrix.cxx == 'g++' && steps.cache-mingw.outputs.cache-hit != 'true'
         shell: bash
         run: |
           7z x compiler/winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64ucrt-9.0.0-r2.zip -ogcc
-
       - name: Configure CMake (Windows g++)
         if: runner.os == 'Windows' && matrix.cxx == 'g++'
         env:
           CXX: ${{ matrix.cxx }}
+        # Use a bash shell so we can use the same syntax for environment variable
+        # access regardless of the host operating system
+        # https://github.com/saxbophone/CPP20-Cross-Platform-Template
         shell: bash
         working-directory: ${{ github.workspace }}/build
         run: |
@@ -88,33 +89,42 @@ jobs:
         if: ${{ !(runner.os == 'Windows' && matrix.cxx == 'g++') }}
         env:
           CXX: ${{ matrix.cxx }}
+        # Use a bash shell so we can use the same syntax for environment variable
+        # access regardless of the host operating system
+        # https://github.com/saxbophone/CPP20-Cross-Platform-Template
         shell: bash
         working-directory: ${{ github.workspace }}/build
         run: |
           CMAKE_GENERATOR=${{ matrix.cmake_generator }} cmake -S $GITHUB_WORKSPACE -B . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-  
+
       - name: Build
         shell: bash
-        run: cmake --build build --config $BUILD_TYPE -j6
+        # Execute the build.  You can specify a specific target with "--target <NAME>"
+        run: |
+          cat .git/config
+          cmake --build build --config $BUILD_TYPE -j6
 
       - name: Install
+        # working-directory: ${{ github.workspace }}/build
         shell: bash
+        # Use CMake to "install" build artifacts (only interested in CMake registered targets) to our custom artifacts directory
         run: cmake --install build --config $BUILD_TYPE --prefix artifacts
 
       - name: Set Tag Name
         shell: bash
+        # trim prefix from ref to get tag name
         run: echo "TAG_NAME=${GITHUB_REF#'refs/tags/'}" >> $GITHUB_ENV
 
       - name: Archive Release
         uses: thedoctor0/zip-release@master
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           type: 'zip'
-          path: 'artifacts'
-          filename:  ${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
-          
+          path: artifacts
+          filename: release_${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-             ${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
+            release_${{ env.TAG_NAME }}_${{ matrix.os }}_${{ matrix.cxx }}.zip
