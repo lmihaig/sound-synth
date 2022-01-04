@@ -9,7 +9,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
     constexpr int HEIGHT = 1080 * 0.5;
 
     // Type determines the quality of the audio float < double
-    auto &app = APPLICATION<double>::instance(WIDTH, HEIGHT);
+    auto &app = APPLICATION<float>::instance(WIDTH, HEIGHT);
     app.run();
     return 0;
 }
