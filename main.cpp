@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED 1
 #include <application.h>
 
 // Need argc and argv for windows compatibility

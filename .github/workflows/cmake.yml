@@ -76,9 +76,6 @@ jobs:
         if: runner.os == 'Windows' && matrix.cxx == 'g++'
         env:
           CXX: ${{ matrix.cxx }}
-        # Use a bash shell so we can use the same syntax for environment variable
-        # access regardless of the host operating system
-        # https://github.com/saxbophone/CPP20-Cross-Platform-Template
         shell: bash
         working-directory: ${{ github.workspace }}/build
         run: |
@@ -89,9 +86,6 @@ jobs:
         if: ${{ !(runner.os == 'Windows' && matrix.cxx == 'g++') }}
         env:
           CXX: ${{ matrix.cxx }}
-        # Use a bash shell so we can use the same syntax for environment variable
-        # access regardless of the host operating system
-        # https://github.com/saxbophone/CPP20-Cross-Platform-Template
         shell: bash
         working-directory: ${{ github.workspace }}/build
         run: |
@@ -99,20 +93,16 @@ jobs:
 
       - name: Build
         shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
           cat .git/config
           cmake --build build --config $BUILD_TYPE -j6
 
       - name: Install
-        # working-directory: ${{ github.workspace }}/build
         shell: bash
-        # Use CMake to "install" build artifacts (only interested in CMake registered targets) to our custom artifacts directory
         run: cmake --install build --config $BUILD_TYPE --prefix artifacts
 
       - name: Set Tag Name
         shell: bash
-        # trim prefix from ref to get tag name
         run: echo "TAG_NAME=${GITHUB_REF#'refs/tags/'}" >> $GITHUB_ENV
 
       - name: Archive Release
