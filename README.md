@@ -22,7 +22,8 @@ Keyboard:
     ESC = Quit
 
 TODO:
-    - fix sound
-    - change instrument
-    - gui
+
+     - fix sound
+     - change instrument
+     - gui
 
