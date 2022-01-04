@@ -2,6 +2,7 @@ name: C++ CMake CI
 
 on:
   push:
+    branches: [master] 
     tags: '*'
 
 jobs:
