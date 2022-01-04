@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.15)
 project(sound-synth VERSION 0.1.0)
 
+if(MSVC)
+else()
+  if(WINDOWS)
+    SET(CMAKE_COMPILER_IS_MINGW TRUE)
+    SET(MINGW TRUE)
+    SET(CMAKE_COMPILER_IS_GNUCC TRUE)
+    SET(USE_GCC TRUE)
+    SET(SDL_DIRECTX FALSE)
+  endif()
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/artifacts)
