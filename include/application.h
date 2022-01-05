@@ -15,7 +15,7 @@ class APPLICATION
     {
         T ticks;
         T secondsPerTick;
-        instrument_harmonica<T> currentInstrument;
+        instrument_base<T> *currentInstrument;
         std::vector<note<T>> notes;
     };
 
@@ -24,6 +24,12 @@ class APPLICATION
     inline static const std::vector<SDL_KeyCode> keys = {SDLK_z, SDLK_s, SDLK_x, SDLK_c, SDLK_f, SDLK_v, SDLK_g, SDLK_b, SDLK_n, SDLK_j, SDLK_m, SDLK_k, SDLK_COMMA, SDLK_l, SDLK_PERIOD, SDLK_SLASH};
     bool initialised = false;
     bool running = true;
+
+    instrument_bell<T> bell;
+    instrument_harmonica<T> harm;
+    instrument_drum_hihat<T> hihat;
+    instrument_drum_kick<T> kick;
+    instrument_drum_snare<T> snare;
 
     SDL_Renderer *renderer = nullptr;
     SDL_Window *window = nullptr;

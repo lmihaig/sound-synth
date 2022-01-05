@@ -99,7 +99,7 @@ void APPLICATION<T>::handleEvents()
                     // Add pressed key
                     if (event.type == SDL_KEYDOWN)
                     {
-                        std::cout << "Note " << keyID << " was played on " << synthData.currentInstrument;
+                        std::cout << "Note " << keyID << " was played\n";
                         addNote(keyID);
                     }
 
@@ -205,7 +205,42 @@ void APPLICATION<T>::removeNote(int keyID)
 template <class T>
 void APPLICATION<T>::changeInstrument(SDL_Keycode instCode)
 {
-    instCode = instCode;
+
+    switch (instCode)
+    {
+    case SDLK_1:
+    {
+        synthData.currentInstrument = &harm;
+        std::cout << "Switched instrument to " << harm;
+    }
+    break;
+    case SDLK_2:
+    {
+        synthData.currentInstrument = &bell;
+        std::cout << "Switched instrument to " << bell;
+    }
+    break;
+    case SDLK_3:
+    {
+        synthData.currentInstrument = &hihat;
+        std::cout << "Switched instrument to " << hihat;
+    }
+    break;
+    case SDLK_4:
+    {
+        synthData.currentInstrument = &kick;
+        std::cout << "Switched instrument to " << kick;
+    }
+    break;
+    case SDLK_5:
+    {
+        synthData.currentInstrument = &snare;
+        std::cout << "Switched instrument to " << snare;
+    }
+    break;
+    default:
+        break;
+    }
 }
 
 template <class T>
@@ -228,7 +263,7 @@ void APPLICATION<T>::audioCallback(void *userdata, Uint8 *stream, int len)
         for (auto &n : curSynthData->notes)
         {
             bool noteFinished = false;
-            mixedOutput += curSynthData->currentInstrument.sound(curSynthData->ticks, n, noteFinished);
+            mixedOutput += curSynthData->currentInstrument->sound(curSynthData->ticks, n, noteFinished);
             if (noteFinished)
                 n.active = false;
         }

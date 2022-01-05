@@ -21,6 +21,13 @@ Keyboard:
 
     ESC = Quit
 
+    Before playing select an instrument:
+    1 = Harmonica (recommended)
+    2 = Bell
+    3 = Hihat drum
+    4 = Kick drum
+    5 = Snare drum
+
 TODO:
 
      - fix sound
