@@ -31,6 +31,5 @@ Keyboard:
 TODO:
 
      - fix sound
-     - change instrument
      - gui
 
